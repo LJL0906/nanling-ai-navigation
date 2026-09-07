@@ -1,0 +1,16 @@
+---
+/** 四列大卡片网格，用于带预览图的分区。 */
+import type { Site } from '../../lib/types';
+import PreviewCard from './PreviewCard.astro';
+
+interface Props {
+  sites: Site[];
+  label?: string;
+}
+const { sites, label } = Astro.props;
+---
+<ul class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4" aria-label={label}>
+  {sites.map((site) => (
+    <li><PreviewCard site={site} /></li>
+  ))}
+</ul>

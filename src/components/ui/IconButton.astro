@@ -1,0 +1,29 @@
+---
+/** 方形图标按钮。额外属性（如 data-* / aria-*）透传到根元素。 */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  icon: string;
+  label: string;
+  href?: string;
+  size?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { icon, label, href, size = 18, class: cls = '', ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag
+  class:list={[
+    'inline-flex h-9 w-9 items-center justify-center rounded-lg text-ink-400 transition hover:bg-chip hover:text-ink-700 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white',
+    cls,
+  ]}
+  href={href}
+  type={href ? undefined : 'button'}
+  aria-label={label}
+  title={label}
+  {...rest}
+>
+  <Icon name={icon} style={`width:${size}px;height:${size}px`} />
+</Tag>

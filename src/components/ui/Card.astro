@@ -1,0 +1,25 @@
+---
+/** 通用白底圆角卡片。传 href 时渲染为链接并带 hover 抬升效果。 */
+interface Props {
+  href?: string;
+  external?: boolean;
+  class?: string;
+  ariaLabel?: string;
+}
+
+const { href, external = false, class: cls = '', ariaLabel } = Astro.props;
+const base =
+  'block rounded-xl border border-hairline bg-surface transition duration-200 dark:border-white/10 dark:bg-white/5';
+const interactive =
+  'hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-[0_8px_24px_-12px_rgba(55,119,245,0.35)]';
+const Tag = href ? 'a' : 'div';
+---
+<Tag
+  class:list={[base, href && interactive, cls]}
+  href={href}
+  aria-label={ariaLabel}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,31 @@
+---
+/** 侧边栏推广卡片。3D 玻璃质感用 CSS 渐变近似设计稿中的渲染图。 */
+import Button from '../ui/Button.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+<div
+  class:list={[
+    'relative overflow-hidden rounded-xl bg-promo px-4 pt-4 pb-24 dark:bg-brand-500/15',
+    cls,
+  ]}
+>
+  <strong class="block text-[13px] font-semibold text-ink-900 dark:text-white">高效从这里开始</strong>
+  <p class="mt-1 text-[11px] leading-relaxed text-ink-500 dark:text-white/60">探索优质网站，提升效率</p>
+  <Button href="/categories/" size="sm" class="mt-3">立即探索</Button>
+
+  <div class="pointer-events-none absolute -right-3 -bottom-4 h-32 w-32" aria-hidden="true">
+    <div
+      class="absolute inset-x-2 bottom-6 h-16 rotate-6 rounded-[26px] bg-linear-to-br from-white/75 via-brand-300/55 to-brand-500/65"
+    >
+    </div>
+    <div
+      class="absolute bottom-10 left-7 h-14 w-14 rounded-full bg-linear-to-b from-white/90 via-brand-300/85 to-brand-600 shadow-[inset_0_-6px_12px_rgba(255,255,255,0.5)]"
+    >
+    </div>
+    <div class="absolute bottom-[70px] left-3 h-10 w-24 -rotate-[20deg] rounded-full border-2 border-white/85"></div>
+  </div>
+</div>

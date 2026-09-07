@@ -1,0 +1,41 @@
+---
+/**
+ * 站点预览缩略图。设计稿此处是真实网站截图，这里用 CSS 拼出
+ * 浏览器窗口骨架作占位，避免引入无法自动更新的外部图片。
+ */
+import type { Site } from '../../lib/types';
+
+interface Props {
+  site: Site;
+}
+const { site } = Astro.props;
+
+const style = site.preview ?? 'light';
+const shell = { light: 'bg-[#f4f6fa]', blue: 'bg-[#2f6fe4]', dark: 'bg-[#23252c]' }[style];
+const bar = style === 'light' ? 'bg-[#e4e8f0]' : 'bg-black/15';
+const line = style === 'light' ? 'bg-[#e8ebf2]' : 'bg-white/25';
+---
+<div
+  class:list={['relative aspect-16/10 overflow-hidden rounded-lg border border-hairline dark:border-white/10', shell]}
+  aria-hidden="true"
+>
+  <div class:list={['flex h-4 items-center gap-1 px-2', bar]}>
+    <span class="h-1 w-1 rounded-full bg-current opacity-25"></span>
+    <span class="h-1 w-1 rounded-full bg-current opacity-25"></span>
+    <span class="h-1 w-1 rounded-full bg-current opacity-25"></span>
+    <span class="ml-1.5 h-1.5 flex-1 rounded-full bg-current opacity-10"></span>
+  </div>
+  <div class="space-y-1.5 p-2.5">
+    <div class="flex items-center gap-1.5">
+      <span class="h-3 w-3 rounded-sm" style={`background:${site.color}`}></span>
+      <span class:list={['h-1.5 w-10 rounded-full', line]}></span>
+    </div>
+    <div class:list={['h-1.5 w-full rounded-full', line]}></div>
+    <div class:list={['h-1.5 w-[85%] rounded-full', line]}></div>
+    <div class:list={['h-1.5 w-[68%] rounded-full', line]}></div>
+    <div class="flex gap-1.5 pt-0.5">
+      <span class:list={['h-6 flex-1 rounded', line]}></span>
+      <span class:list={['h-6 flex-1 rounded', line]}></span>
+    </div>
+  </div>
+</div>

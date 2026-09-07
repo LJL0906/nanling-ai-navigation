@@ -1,0 +1,18 @@
+---
+/** 灰底标签，用于热门搜索词。 */
+interface Props {
+  href?: string;
+  class?: string;
+}
+const { href, class: cls = '' } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+<Tag
+  class:list={[
+    'inline-flex h-7 items-center rounded-md bg-chip px-3 text-xs text-ink-500 transition hover:bg-brand-50 hover:text-brand-600 dark:bg-white/10 dark:text-white/70',
+    cls,
+  ]}
+  href={href}
+>
+  <slot />
+</Tag>

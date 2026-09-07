@@ -1,0 +1,36 @@
+---
+/**
+ * 尚未开放的栏目占位页。设计稿含这些入口但未给出内容，
+ * 这里给出明确说明并提供返回路径，避免死链。
+ */
+import { Icon } from 'astro-icon/components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../config/site';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  heading: string;
+  note: string;
+  icon: string;
+  path: string;
+}
+const { heading, note, icon, path } = Astro.props;
+---
+<BaseLayout
+  title={`${heading} - ${SITE.name}`}
+  description={note}
+  canonical={`${SITE.url}${path}`}
+  robots="noindex,follow"
+>
+  <div class="grid place-items-center py-24 text-center">
+    <span class="grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand-500 dark:bg-brand-500/15" aria-hidden="true">
+      <Icon name={icon} style="width:26px;height:26px" />
+    </span>
+    <h1 class="mt-5 text-lg font-semibold text-ink-900 dark:text-white">{heading}</h1>
+    <p class="mt-2 max-w-sm text-[13px] leading-relaxed text-ink-400 dark:text-white/55">{note}</p>
+    <div class="mt-6 flex gap-2.5">
+      <Button href="/">返回首页</Button>
+      <Button href="/categories/" variant="soft">浏览全部分类</Button>
+    </div>
+  </div>
+</BaseLayout>

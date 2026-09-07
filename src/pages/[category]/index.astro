@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../config/site';
+import { categories } from '../../lib/data';
+import { websiteNode, breadcrumb, itemList } from '../../lib/seo';
+import type { Category } from '../../lib/types';
+import { Icon } from 'astro-icon/components';
+import Card from '../../components/ui/Card.astro';
+import BrandIcon from '../../components/ui/BrandIcon.astro';
+
+export function getStaticPaths() {
+  return categories.map((cat) => ({ params: { category: cat.slug }, props: { category: cat } }));
+}
+
+const { category } = Astro.props as { category: Category };
+const canonical = `${SITE.url}/${category.slug}/`;
+const title = `${category.name}_网站导航 | ${SITE.name}`;
+const description = `${category.desc}精选 ${category.sites.length} 个${category.name}优质网站，收藏夹必备。`;
+
+const ld = [
+  websiteNode,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    url: canonical,
+    description,
+    inLanguage: 'zh-CN',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+  },
+  breadcrumb([
+    { name: '首页', url: `${SITE.url}/` },
+    { name: category.name, url: canonical },
+  ]),
+  itemList(
+    `${category.name}站点列表`,
+    category.sites.map((s) => ({ name: s.name, url: s.url }))
+  ),
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={category.keywords}
+  canonical={canonical}
+  ld={ld}
+>
+  <nav class="flex items-center gap-1.5 text-xs text-ink-300 dark:text-white/40" aria-label="面包屑">
+    <a href="/" class="transition-colors hover:text-brand-500">首页</a>
+    <Icon name="lucide:chevron-right" style="width:13px;height:13px" />
+    <span class="text-ink-500 dark:text-white/70">{category.name}</span>
+  </nav>
+
+  <header
+    class="mt-4 flex items-start gap-4 rounded-2xl border border-hairline bg-linear-to-br from-white to-[#f7f8fc] p-6 dark:border-white/10 dark:from-white/5 dark:to-white/[0.02]"
+  >
+    <BrandIcon icon={category.icon} color={category.color} size={48} />
+    <div>
+      <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">{category.name}</h1>
+      <p class="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-ink-400 dark:text-white/55">{description}</p>
+    </div>
+  </header>
+
+  <h2 class="mt-8 mb-4 text-[17px] font-semibold text-ink-900 dark:text-white">
+    全部站点
+    <span class="ml-1 text-xs font-normal text-ink-300 dark:text-white/40">共 {category.sites.length} 个</span>
+  </h2>
+
+  <ul class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+    {category.sites.map((site) => (
+      <li>
+        <Card class="flex gap-3.5 p-4">
+          <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={42} />
+          <div class="min-w-0 flex-1">
+            <h3 class="truncate text-sm font-medium text-ink-900 dark:text-white">
+              <a href={`/${category.slug}/${site.slug}/`} class="transition-colors hover:text-brand-500">{site.name}</a>
+            </h3>
+            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-300 dark:text-white/45">{site.desc}</p>
+            <a
+              href={site.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-2 inline-flex items-center gap-1 text-xs text-brand-500 transition-opacity hover:opacity-70"
+            >
+              直达官网
+              <Icon name="lucide:external-link" style="width:12px;height:12px" />
+            </a>
+          </div>
+        </Card>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

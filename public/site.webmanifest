@@ -1,0 +1,13 @@
+{
+  "name": "楠灵AI 导航 - 发现优质，探索无限",
+  "short_name": "楠灵AI 导航",
+  "description": "精心整理的实用网站导航，收录搜索引擎、AI 工具、开发工具、设计素材、资讯社区等优质站点，助你高效获取信息。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fefefe",
+  "theme_color": "#3777f5",
+  "icons": [
+    { "src": "/logo.png", "sizes": "any", "type": "image/png" }
+  ]
+}
+

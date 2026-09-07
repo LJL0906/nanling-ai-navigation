@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+npm-debug.log*
+
+# 本地临时产物
+*.log

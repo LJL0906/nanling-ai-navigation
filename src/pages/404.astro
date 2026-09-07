@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site';
+import Button from '../components/ui/Button.astro';
+
+const description = '您访问的页面不存在或已被移除，返回首页继续浏览精选网站导航。';
+---
+<BaseLayout
+  title={`页面不存在 - ${SITE.name}`}
+  description={description}
+  canonical={`${SITE.url}/404/`}
+  robots="noindex,follow"
+>
+  <div class="grid place-items-center py-24 text-center">
+    <p class="text-6xl font-bold tracking-tight text-brand-500">404</p>
+    <h1 class="mt-4 text-lg font-semibold text-ink-900 dark:text-white">页面不存在</h1>
+    <p class="mt-2 max-w-sm text-[13px] text-ink-400 dark:text-white/55">{description}</p>
+    <Button href="/" class="mt-6">返回首页</Button>
+  </div>
+</BaseLayout>

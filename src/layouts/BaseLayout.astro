@@ -1,0 +1,95 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { SITE } from '../config/site';
+import Sidebar from '../components/layout/Sidebar.astro';
+import Topbar from '../components/layout/Topbar.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  canonical: string;
+  robots?: string;
+  ld?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  keywords = SITE.keywords,
+  canonical,
+  robots = 'index,follow',
+  ld = [],
+} = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={`${SITE.url}/logo.png`} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${SITE.url}/logo.png`} />
+
+    <meta name="theme-color" content="#fefefe" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1016" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- 在首屏渲染前套用主题，避免深色模式闪白 -->
+    <script is:inline>
+      try {
+        if (localStorage.getItem('nav-theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+
+    <ClientRouter />
+    {ld.map((node) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(node).replace(/</g, '\u003c')} />
+    ))}
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+    >
+      跳转到主要内容
+    </a>
+
+    <Sidebar />
+
+    <div class="lg:pl-rail">
+      <Topbar />
+      <main id="main" class="px-4 py-6 lg:px-6" tabindex="-1">
+        <slot />
+      </main>
+      <footer class="border-t border-hairline px-4 py-6 text-xs text-ink-300 lg:px-6 dark:border-white/10 dark:text-white/40">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span>© {new Date().getFullYear()} {SITE.name} · {SITE.slogan}</span>
+          <a href="/sitemap.xml" class="transition-colors hover:text-brand-500">站点地图</a>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+---
+/** 顶部导航条：左侧下拉菜单组，右侧主题 / 通知 / 用户区。 */
+import { Icon } from 'astro-icon/components';
+import { TOP_NAV, CURRENT_USER } from '../../config/site';
+import IconButton from '../ui/IconButton.astro';
+
+const path = Astro.url.pathname;
+/** 下拉组内任一子项匹配当前路径时高亮该组 */
+const groupActive = (children: readonly { href: string }[]) =>
+  children.some((c) => (c.href === '/' ? path === '/' : path.startsWith(c.href)));
+---
+<header
+  class="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-hairline bg-surface/90 px-4 backdrop-blur lg:px-6 dark:border-white/10 dark:bg-[#0e1016]/90"
+>
+  <div class="flex items-center gap-1">
+    <IconButton
+      icon="lucide:menu"
+      label="打开导航菜单"
+      class="lg:hidden"
+      data-drawer-open
+      aria-controls="sidebar"
+      aria-expanded="false"
+    />
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="快捷导航">
+      {TOP_NAV.map((group) => (
+        <details class="relative" data-dropdown>
+          <summary
+            class:list={[
+              'flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm transition-colors marker:content-none',
+              groupActive(group.children)
+                ? 'bg-chip font-medium text-ink-900 dark:bg-white/10 dark:text-white'
+                : 'text-ink-500 hover:bg-chip hover:text-ink-900 dark:text-white/65 dark:hover:bg-white/10',
+            ]}
+          >
+            {group.label}
+            <Icon name="lucide:chevron-down" style="width:13px;height:13px" class="opacity-60" />
+          </summary>
+          <div
+            class="absolute left-0 top-[calc(100%+6px)] z-40 min-w-[134px] rounded-xl border border-hairline bg-surface p-2 shadow-[0_16px_40px_-16px_rgb(20_24_40/0.25)] dark:border-white/10 dark:bg-[#171a23]"
+          >
+            {group.children.map((child) => (
+              <a
+                href={child.href}
+                class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 transition-colors hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10"
+              >
+                {child.label}
+              </a>
+            ))}
+          </div>
+        </details>
+      ))}
+    </nav>
+  </div>
+
+  <div class="flex items-center gap-1">
+    <IconButton icon="lucide:sun-medium" label="切换主题" data-theme-toggle aria-pressed="false" />
+    <IconButton icon="lucide:bell" label="通知" href="/notifications/" />
+    <details class="relative" data-dropdown>
+      <summary
+        class="flex cursor-pointer list-none items-center gap-2 rounded-full py-1 pr-2 pl-1 transition-colors marker:content-none hover:bg-chip dark:hover:bg-white/10"
+      >
+        <span
+          class="grid h-8 w-8 place-items-center rounded-full bg-linear-to-br from-brand-400 to-brand-600 text-xs font-semibold text-white"
+          aria-hidden="true"
+        >
+          {CURRENT_USER.name.charAt(0)}
+        </span>
+        <span class="hidden text-sm text-ink-700 sm:inline dark:text-white/80">{CURRENT_USER.name}</span>
+        <Icon name="lucide:chevron-down" style="width:13px;height:13px" class="opacity-60" />
+      </summary>
+      <div
+        class="absolute right-0 top-[calc(100%+6px)] z-40 min-w-[132px] rounded-xl border border-hairline bg-surface p-2 shadow-[0_16px_40px_-16px_rgb(20_24_40/0.25)] dark:border-white/10 dark:bg-[#171a23]"
+      >
+        <a href="/favorites/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">我的收藏</a>
+        <a href="/history/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">最近访问</a>
+        <a href="/settings/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">设置</a>
+      </div>
+    </details>
+  </div>
+</header>

@@ -1,0 +1,91 @@
+---
+/** 左侧固定导航栏。移动端为抽屉，由 .drawer-open 控制。 */
+import { Icon } from 'astro-icon/components';
+import { SITE } from '../../config/site';
+import { SIDEBAR_MAIN, SIDEBAR_SHORTCUTS } from '../../config/nav';
+import Logo from './Logo.astro';
+import IconButton from '../ui/IconButton.astro';
+import PromoCard from '../home/PromoCard.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href.includes('#')) return false;
+  return href === '/' ? path === '/' : path.startsWith(href);
+};
+
+const linkBase =
+  'flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm transition-colors';
+const linkIdle =
+  'text-ink-500 hover:bg-brand-200/60 hover:text-ink-900 dark:text-white/65 dark:hover:bg-white/10 dark:hover:text-white';
+const linkOn =
+  'bg-brand-200 font-medium text-brand-500 dark:bg-brand-500/20 dark:text-brand-300';
+---
+<aside
+  id="sidebar"
+  class="drawer-panel fixed inset-y-0 left-0 z-50 flex w-rail flex-col border-r border-hairline bg-rail lg:translate-x-0 dark:border-white/10 dark:bg-[#12141c]"
+  aria-label="站点主导航"
+>
+  <div class="flex items-start justify-between gap-2 px-5 pt-5 pb-4">
+    <a href="/" class="flex items-center gap-2.5" aria-label={`${SITE.name} 首页`}>
+      <Logo size={38} />
+      <span class="leading-tight">
+        <strong class="block text-[17px] font-semibold tracking-tight text-ink-900 dark:text-white">{SITE.name}</strong>
+        <small class="block text-[11px] text-ink-300 dark:text-white/45">{SITE.slogan}</small>
+      </span>
+    </a>
+    <IconButton icon="lucide:x" label="关闭导航菜单" class="lg:hidden" data-drawer-close />
+  </div>
+
+  <div class="scrollbar-slim flex-1 overflow-y-auto px-4 pb-4">
+    <nav aria-label="分类导航">
+      <ul class="space-y-0.5">
+        {SIDEBAR_MAIN.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[linkBase, isActive(item.href) ? linkOn : linkIdle]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              <Icon name={item.icon} style="width:18px;height:18px" />
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <hr class="my-3 border-hairline dark:border-white/10" />
+
+    <nav aria-label="个人收藏与历史">
+      <ul class="space-y-0.5">
+        {SIDEBAR_SHORTCUTS.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[linkBase, isActive(item.href) ? linkOn : linkIdle]}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              <Icon name={item.icon} style="width:18px;height:18px" />
+              <span>{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <PromoCard class="mt-4" />
+  </div>
+
+  <div class="flex items-center justify-around border-t border-hairline px-4 py-3 dark:border-white/10">
+    <IconButton icon="lucide:moon" label="切换到深色主题" data-set-theme="dark" />
+    <IconButton icon="lucide:sun" label="切换到浅色主题" data-set-theme="light" />
+    <IconButton icon="lucide:settings" label="设置" href="/settings/" />
+  </div>
+</aside>
+
+<button
+  class="drawer-scrim fixed inset-0 z-40 hidden bg-ink-900/30 backdrop-blur-[1px] lg:!hidden"
+  aria-label="关闭导航菜单"
+  tabindex="-1"
+  data-drawer-close
+></button>

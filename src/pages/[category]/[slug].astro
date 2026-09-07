@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../config/site';
+import { categories, domainOf, relatedSites } from '../../lib/data';
+import { websiteNode, breadcrumb } from '../../lib/seo';
+import type { Category, Site } from '../../lib/types';
+import { Icon } from 'astro-icon/components';
+import Card from '../../components/ui/Card.astro';
+import Button from '../../components/ui/Button.astro';
+import BrandIcon from '../../components/ui/BrandIcon.astro';
+
+export function getStaticPaths() {
+  return categories.flatMap((cat) =>
+    cat.sites.map((site) => ({
+      params: { category: cat.slug, slug: site.slug },
+      props: { category: cat, site },
+    }))
+  );
+}
+
+const { category, site } = Astro.props as { category: Category; site: Site };
+const canonical = `${SITE.url}/${category.slug}/${site.slug}/`;
+const title = `${site.name}官网入口 | ${category.name} - ${SITE.name}`;
+const description = `${site.name}：${site.desc}。${SITE.name}收录的${category.name}精选网站，点击直达官网。`;
+const related = relatedSites(category, site);
+
+const ld = [
+  websiteNode,
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': canonical,
+    name: title,
+    url: canonical,
+    description,
+    inLanguage: 'zh-CN',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    mainEntity: { '@type': 'WebSite', name: site.name, url: site.url, description: site.desc },
+  },
+  breadcrumb([
+    { name: '首页', url: `${SITE.url}/` },
+    { name: category.name, url: `${SITE.url}/${category.slug}/` },
+    { name: site.name, url: canonical },
+  ]),
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={`${site.name},${site.name}官网,${category.keywords}`}
+  canonical={canonical}
+  ld={ld}
+>
+  <nav class="flex items-center gap-1.5 text-xs text-ink-300 dark:text-white/40" aria-label="面包屑">
+    <a href="/" class="transition-colors hover:text-brand-500">首页</a>
+    <Icon name="lucide:chevron-right" style="width:13px;height:13px" />
+    <a href={`/${category.slug}/`} class="transition-colors hover:text-brand-500">{category.name}</a>
+    <Icon name="lucide:chevron-right" style="width:13px;height:13px" />
+    <span class="text-ink-500 dark:text-white/70">{site.name}</span>
+  </nav>
+
+  <article
+    class="mt-4 flex flex-col gap-5 rounded-2xl border border-hairline bg-linear-to-br from-white to-[#f7f8fc] p-6 sm:flex-row sm:items-center dark:border-white/10 dark:from-white/5 dark:to-white/[0.02]"
+  >
+    <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={72} />
+    <div class="min-w-0 flex-1">
+      <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">{site.name}</h1>
+      <p class="mt-1 text-xs text-ink-300 dark:text-white/45">{domainOf(site)}</p>
+      <p class="mt-2.5 text-[13px] leading-relaxed text-ink-400 dark:text-white/55">
+        {site.desc}。收录于{SITE.name}「{category.name}」分类。
+      </p>
+    </div>
+    <Button href={site.url} external class="shrink-0">
+      访问官网
+      <Icon name="lucide:external-link" style="width:14px;height:14px" />
+    </Button>
+  </article>
+
+  {related.length > 0 && (
+    <>
+      <h2 class="mt-8 mb-4 text-[17px] font-semibold text-ink-900 dark:text-white">同类推荐</h2>
+      <ul class="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-6">
+        {related.map((item) => (
+          <li>
+            <Card href={`/${category.slug}/${item.slug}/`} class="group px-3.5 py-3">
+              <div class="flex items-center gap-3">
+                <BrandIcon icon={item.icon} mono={item.mono ?? item.name.charAt(0)} color={item.color} size={38} />
+                <div class="min-w-0">
+                  <div class="truncate text-sm font-medium text-ink-900 transition-colors group-hover:text-brand-500 dark:text-white">
+                    {item.name}
+                  </div>
+                  <div class="truncate text-[11px] text-ink-300 dark:text-white/45">{item.desc}</div>
+                </div>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+</BaseLayout>

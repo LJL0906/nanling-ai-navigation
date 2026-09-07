@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../config/site';
+import { categories, siteCount } from '../../lib/data';
+import { websiteNode, breadcrumb, itemList } from '../../lib/seo';
+import Card from '../../components/ui/Card.astro';
+import BrandIcon from '../../components/ui/BrandIcon.astro';
+
+const canonical = `${SITE.url}/categories/`;
+const title = `全部分类_网站导航 | ${SITE.name}`;
+const description = `${SITE.name}全部 ${categories.length} 个分类，共收录 ${siteCount} 个优质网站，按需查找一目了然。`;
+const ld = [
+  websiteNode,
+  breadcrumb([
+    { name: '首页', url: `${SITE.url}/` },
+    { name: '全部分类', url: canonical },
+  ]),
+  itemList(
+    '全部分类',
+    categories.map((c) => ({ name: c.name, url: `${SITE.url}/${c.slug}/` }))
+  ),
+];
+---
+<BaseLayout title={title} description={description} canonical={canonical} ld={ld}>
+  <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">全部分类</h1>
+  <p class="mt-1.5 text-[13px] text-ink-400 dark:text-white/55">{description}</p>
+
+  <ul class="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+    {categories.map((cat) => (
+      <li>
+        <Card href={`/${cat.slug}/`} class="group p-4">
+          <div class="flex items-center gap-3">
+            <BrandIcon icon={cat.icon} color={cat.color} size={42} />
+            <div class="min-w-0">
+              <div class="text-sm font-medium text-ink-900 transition-colors group-hover:text-brand-500 dark:text-white">
+                {cat.name}
+              </div>
+              <div class="text-[11px] text-ink-300 dark:text-white/45">{cat.sites.length} 个站点</div>
+            </div>
+          </div>
+          <p class="mt-3 line-clamp-2 text-xs leading-relaxed text-ink-300 dark:text-white/45">{cat.desc}</p>
+        </Card>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

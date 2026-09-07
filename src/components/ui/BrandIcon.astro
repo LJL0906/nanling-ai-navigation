@@ -1,0 +1,26 @@
+---
+/** 站点图标方块：有 Iconify 图标时按品牌色着色，否则回退为首字方块。 */
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  icon?: string | null;
+  mono?: string;
+  color?: string;
+  size?: number;
+  class?: string;
+}
+
+const { icon = null, mono = '', color = '#3777f5', size = 40, class: cls = '' } = Astro.props;
+const glyph = Math.round(size * 0.55);
+---
+<span
+  class:list={['inline-flex shrink-0 items-center justify-center rounded-[10px]', cls]}
+  style={`width:${size}px;height:${size}px;background:${color}1f`}
+  aria-hidden="true"
+>
+  {icon ? (
+    <Icon name={icon} style={`color:${color};width:${glyph}px;height:${glyph}px`} />
+  ) : (
+    <span class="font-bold leading-none" style={`color:${color};font-size:${Math.round(size * 0.36)}px`}>{mono}</span>
+  )}
+</span>

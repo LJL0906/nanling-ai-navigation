@@ -1,0 +1,206 @@
+{
+  "categories": [
+    {
+      "slug": "search-engines",
+      "name": "搜索引擎",
+      "desc": "主流综合搜索引擎入口，一处直达，检索信息更高效。",
+      "keywords": "搜索引擎,综合搜索,Google,百度,Bing,搜索入口",
+      "color": "#4285f4",
+      "icon": "lucide:search",
+      "home": { "show": true, "layout": "grid", "moreLabel": "更多搜索引擎" },
+      "sites": [
+        { "name": "Google", "slug": "google", "url": "https://www.google.com", "desc": "全球领先的搜索引擎", "icon": "simple-icons:google", "color": "#4285f4" },
+        { "name": "Bing", "slug": "bing", "url": "https://www.bing.com", "desc": "微软必应搜索", "icon": "simple-icons:microsoftbing", "color": "#0078d4" },
+        { "name": "百度", "slug": "baidu", "url": "https://www.baidu.com", "desc": "百度一下，你就知道", "icon": "simple-icons:baidu", "color": "#2932e1" },
+        { "name": "搜狗搜索", "slug": "sogou", "url": "https://www.sogou.com", "desc": "搜索信息更快更准", "icon": "simple-icons:sogou", "color": "#fd6853" },
+        { "name": "360搜索", "slug": "so360", "url": "https://www.so.com", "desc": "安全可靠的搜索服务", "icon": null, "mono": "360", "color": "#19b955" },
+        { "name": "神马搜索", "slug": "shenma", "url": "https://m.sm.cn", "desc": "移动搜索更方便", "icon": null, "mono": "神", "color": "#ff6a00" }
+      ]
+    },
+    {
+      "slug": "ai",
+      "name": "AI 工具",
+      "desc": "大模型对话、AI 绘画、写作与音乐创作工具合集。",
+      "keywords": "AI工具,人工智能,大模型,ChatGPT,AI绘画,AIGC,AI助手",
+      "color": "#7c5cff",
+      "icon": "lucide:sparkles",
+      "home": { "show": true, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "ChatGPT", "slug": "chatgpt", "url": "https://chatgpt.com", "desc": "智能对话助手", "icon": "simple-icons:openai", "color": "#10a37f" },
+        { "name": "Midjourney", "slug": "midjourney", "url": "https://www.midjourney.com", "desc": "AI 绘画工具", "icon": null, "mono": "MJ", "color": "#2b3245" },
+        { "name": "Claude", "slug": "claude", "url": "https://claude.ai", "desc": "AI 助手", "icon": "simple-icons:claude", "color": "#d97757" },
+        { "name": "Notion AI", "slug": "notion-ai", "url": "https://www.notion.so/product/ai", "desc": "智能笔记助手", "icon": "simple-icons:notion", "color": "#191919" },
+        { "name": "Copy.ai", "slug": "copy-ai", "url": "https://www.copy.ai", "desc": "AI 文案创作", "icon": null, "mono": "C", "color": "#17b0a7" },
+        { "name": "Suno", "slug": "suno", "url": "https://suno.com", "desc": "AI 音乐创作", "icon": "simple-icons:suno", "color": "#191919" }
+      ]
+    },
+    {
+      "slug": "dev",
+      "name": "开发工具",
+      "desc": "代码托管、容器化、接口调试与编辑器，程序员必备工具箱。",
+      "keywords": "开发工具,程序员导航,代码托管,GitHub,Docker,VS Code",
+      "color": "#3777f5",
+      "icon": "lucide:command",
+      "home": { "show": true, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "GitHub", "slug": "github", "url": "https://github.com", "desc": "全球代码托管平台", "icon": "simple-icons:github", "color": "#181717" },
+        { "name": "Gitee", "slug": "gitee", "url": "https://gitee.com", "desc": "代码托管平台", "icon": "simple-icons:gitee", "color": "#c71d23" },
+        { "name": "Docker", "slug": "docker", "url": "https://www.docker.com", "desc": "容器化平台", "icon": "simple-icons:docker", "color": "#2496ed" },
+        { "name": "Stack Overflow", "slug": "stack-overflow", "url": "https://stackoverflow.com", "desc": "开发者问答社区", "icon": "simple-icons:stackoverflow", "color": "#f58025" },
+        { "name": "Postman", "slug": "postman", "url": "https://www.postman.com", "desc": "API 开发工具", "icon": "simple-icons:postman", "color": "#ff6c37" },
+        { "name": "VS Code", "slug": "vs-code", "url": "https://code.visualstudio.com", "desc": "轻量级代码编辑器", "icon": "simple-icons:visualstudiocode", "color": "#007acc" }
+      ]
+    },
+    {
+      "slug": "design",
+      "name": "设计素材",
+      "desc": "设计协作、免费图库、图标与配色工具，设计师效率资源。",
+      "keywords": "设计素材,UI设计,免费图库,图标资源,配色方案,Figma",
+      "color": "#ec4899",
+      "icon": "lucide:image",
+      "home": { "show": true, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "Figma", "slug": "figma", "url": "https://www.figma.com", "desc": "在线设计工具", "icon": "simple-icons:figma", "color": "#f24e1e" },
+        { "name": "Unsplash", "slug": "unsplash", "url": "https://unsplash.com", "desc": "免费高清图片", "icon": "simple-icons:unsplash", "color": "#111111" },
+        { "name": "Pexels", "slug": "pexels", "url": "https://www.pexels.com", "desc": "高质量图片素材", "icon": "simple-icons:pexels", "color": "#05a081" },
+        { "name": "Iconfont", "slug": "iconfont", "url": "https://www.iconfont.cn", "desc": "阿里巴巴图标库", "icon": null, "mono": "I", "color": "#6a3fd4" },
+        { "name": "Coolors", "slug": "coolors", "url": "https://coolors.co", "desc": "配色方案生成器", "icon": null, "mono": "C", "color": "#0066ff" },
+        { "name": "Dribbble", "slug": "dribbble", "url": "https://dribbble.com", "desc": "设计师社区", "icon": "simple-icons:dribbble", "color": "#ea4c89" }
+      ]
+    },
+    {
+      "slug": "learn",
+      "name": "学习教育",
+      "desc": "慕课、公开课与编程教程，随时随地为自己充电。",
+      "keywords": "学习教育,在线课程,慕课,公开课,编程教程,自学网站",
+      "color": "#22d3ee",
+      "icon": "lucide:graduation-cap",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "中国大学MOOC", "slug": "icourse163", "url": "https://www.icourse163.org", "desc": "国内名校精品慕课平台", "icon": null, "mono": "M", "color": "#22a2e8" },
+        { "name": "Coursera", "slug": "coursera", "url": "https://www.coursera.org", "desc": "世界名校在线课程平台", "icon": "simple-icons:coursera", "color": "#0056d2" },
+        { "name": "哔哩哔哩", "slug": "bilibili", "url": "https://www.bilibili.com", "desc": "学习区与知识视频宝库", "icon": "simple-icons:bilibili", "color": "#00a1d6" },
+        { "name": "菜鸟教程", "slug": "runoob", "url": "https://www.runoob.com", "desc": "编程入门教程大全", "icon": null, "mono": "菜", "color": "#4caf50" },
+        { "name": "MDN", "slug": "mdn", "url": "https://developer.mozilla.org", "desc": "权威的 Web 开发文档", "icon": "simple-icons:mdnwebdocs", "color": "#000000" },
+        { "name": "网易公开课", "slug": "open163", "url": "https://open.163.com", "desc": "国内外名校公开课合集", "icon": null, "mono": "公", "color": "#d81e06" }
+      ]
+    },
+    {
+      "slug": "community",
+      "name": "资讯社区",
+      "desc": "科技资讯、问答社区与创意工作者聚集地，获取一手观点。",
+      "keywords": "资讯社区,技术社区,问答社区,科技媒体,知乎,V2EX",
+      "color": "#10b981",
+      "icon": "lucide:newspaper",
+      "home": { "show": true, "layout": "preview", "moreLabel": "更多" },
+      "sites": [
+        { "name": "36氪", "slug": "36kr", "url": "https://36kr.com", "desc": "关注科技创新与创业", "icon": null, "mono": "36", "color": "#0080ff", "preview": "light" },
+        { "name": "知乎", "slug": "zhihu", "url": "https://www.zhihu.com", "desc": "有问题，就会有答案", "icon": "simple-icons:zhihu", "color": "#0084ff", "preview": "blue" },
+        { "name": "少数派", "slug": "sspai", "url": "https://sspai.com", "desc": "高效工作，品质生活", "icon": null, "mono": "少", "color": "#c9252c", "preview": "dark" },
+        { "name": "V2EX", "slug": "v2ex", "url": "https://www.v2ex.com", "desc": "创意工作者社区", "icon": "simple-icons:v2ex", "color": "#1f1f1f", "preview": "light" }
+      ]
+    },
+    {
+      "slug": "office",
+      "name": "办公工具",
+      "desc": "在线文档、流程图、格式转换与压缩工具，办公效率必备。",
+      "keywords": "办公工具,在线工具,在线文档,流程图,格式转换,效率工具",
+      "color": "#f59e0b",
+      "icon": "lucide:briefcase",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "语雀", "slug": "yuque", "url": "https://www.yuque.com", "desc": "专业的云端知识库", "icon": null, "mono": "语", "color": "#25b864" },
+        { "name": "石墨文档", "slug": "shimo", "url": "https://shimo.im", "desc": "在线协作文档与表格", "icon": null, "mono": "石", "color": "#4c7ef3" },
+        { "name": "ProcessOn", "slug": "processon", "url": "https://www.processon.com", "desc": "在线流程图与思维导图", "icon": null, "mono": "P", "color": "#00b38a" },
+        { "name": "TinyPNG", "slug": "tinypng", "url": "https://tinypng.com", "desc": "图片在线无损压缩", "icon": null, "mono": "T", "color": "#e07b39" },
+        { "name": "Convertio", "slug": "convertio", "url": "https://convertio.co", "desc": "万能文件格式在线转换", "icon": null, "mono": "C", "color": "#ff5722" },
+        { "name": "草料二维码", "slug": "cli-im", "url": "https://cli.im", "desc": "二维码生成与管理平台", "icon": null, "mono": "码", "color": "#2f7ef6" }
+      ]
+    },
+    {
+      "slug": "life",
+      "name": "生活服务",
+      "desc": "购物、出行、订票与本地生活服务常用入口。",
+      "keywords": "生活服务,网上购物,出行订票,本地生活,常用网站",
+      "color": "#fb7185",
+      "icon": "lucide:shopping-bag",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "淘宝", "slug": "taobao", "url": "https://www.taobao.com", "desc": "综合网上购物平台", "icon": null, "mono": "淘", "color": "#ff5000" },
+        { "name": "京东", "slug": "jd", "url": "https://www.jd.com", "desc": "自营电商，配送快捷", "icon": null, "mono": "京", "color": "#e1251b" },
+        { "name": "美团", "slug": "meituan", "url": "https://www.meituan.com", "desc": "外卖与本地生活服务", "icon": null, "mono": "美", "color": "#ffc300" },
+        { "name": "大众点评", "slug": "dianping", "url": "https://www.dianping.com", "desc": "餐饮娱乐消费点评", "icon": null, "mono": "点", "color": "#ff6633" },
+        { "name": "中国铁路12306", "slug": "railway12306", "url": "https://www.12306.cn", "desc": "火车票官方购票平台", "icon": null, "mono": "12", "color": "#2b6cb0" },
+        { "name": "菜鸟裹裹", "slug": "cainiao", "url": "https://www.cainiao.com", "desc": "快递查询与寄件服务", "icon": null, "mono": "裹", "color": "#00a1e9" }
+      ]
+    },
+    {
+      "slug": "entertainment",
+      "name": "娱乐休闲",
+      "desc": "影视、音乐与书影音社区，放松时刻的好去处。",
+      "keywords": "娱乐休闲,在线视频,音乐平台,影视网站,休闲娱乐",
+      "color": "#a855f7",
+      "icon": "lucide:gamepad-2",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "哔哩哔哩", "slug": "bilibili-fun", "url": "https://www.bilibili.com", "desc": "年轻人的视频社区", "icon": "simple-icons:bilibili", "color": "#00a1d6" },
+        { "name": "腾讯视频", "slug": "qq-video", "url": "https://v.qq.com", "desc": "热门影视剧综合平台", "icon": null, "mono": "腾", "color": "#ff820f" },
+        { "name": "爱奇艺", "slug": "iqiyi", "url": "https://www.iqiyi.com", "desc": "在线影视与自制剧", "icon": null, "mono": "爱", "color": "#00be06" },
+        { "name": "优酷", "slug": "youku", "url": "https://www.youku.com", "desc": "综合视频娱乐平台", "icon": null, "mono": "优", "color": "#1ebeff" },
+        { "name": "网易云音乐", "slug": "music163", "url": "https://music.163.com", "desc": "音乐社区与歌单推荐", "icon": null, "mono": "云", "color": "#c20c0c" },
+        { "name": "豆瓣", "slug": "douban", "url": "https://www.douban.com", "desc": "书影音与兴趣小组", "icon": null, "mono": "豆", "color": "#2e963b" }
+      ]
+    },
+    {
+      "slug": "finance",
+      "name": "金融理财",
+      "desc": "行情数据、投资社区与财经资讯，理财决策参考。",
+      "keywords": "金融理财,股票行情,财经资讯,投资社区,基金",
+      "color": "#f97316",
+      "icon": "lucide:circle-dollar-sign",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "东方财富", "slug": "eastmoney", "url": "https://www.eastmoney.com", "desc": "财经资讯与行情数据", "icon": null, "mono": "东", "color": "#d9302a" },
+        { "name": "雪球", "slug": "xueqiu", "url": "https://xueqiu.com", "desc": "投资者交流社区", "icon": null, "mono": "雪", "color": "#0f88eb" },
+        { "name": "同花顺", "slug": "10jqka", "url": "https://www.10jqka.com.cn", "desc": "股票行情与交易工具", "icon": null, "mono": "同", "color": "#e93030" },
+        { "name": "新浪财经", "slug": "sina-finance", "url": "https://finance.sina.com.cn", "desc": "综合财经新闻门户", "icon": null, "mono": "新", "color": "#e60012" },
+        { "name": "天天基金", "slug": "fund-eastmoney", "url": "https://fund.eastmoney.com", "desc": "基金净值与投资组合", "icon": null, "mono": "基", "color": "#f4a01b" },
+        { "name": "Wind 万得", "slug": "wind", "url": "https://www.wind.com.cn", "desc": "专业金融数据服务", "icon": null, "mono": "W", "color": "#1b4c93" }
+      ]
+    },
+    {
+      "slug": "download",
+      "name": "资源下载",
+      "desc": "云盘、镜像站与开源软件下载入口。",
+      "keywords": "资源下载,网盘,镜像站,软件下载,开源软件",
+      "color": "#0ea5e9",
+      "icon": "lucide:cloud-download",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "百度网盘", "slug": "baidu-pan", "url": "https://pan.baidu.com", "desc": "大容量云存储服务", "icon": null, "mono": "盘", "color": "#2932e1" },
+        { "name": "夸克网盘", "slug": "quark-pan", "url": "https://pan.quark.cn", "desc": "高速云盘与文件分享", "icon": null, "mono": "夸", "color": "#3d7fff" },
+        { "name": "阿里云盘", "slug": "aliyun-drive", "url": "https://www.aliyundrive.com", "desc": "不限速的云端存储", "icon": null, "mono": "阿", "color": "#ff6a00" },
+        { "name": "清华镜像站", "slug": "tuna", "url": "https://mirrors.tuna.tsinghua.edu.cn", "desc": "开源软件镜像加速", "icon": null, "mono": "镜", "color": "#7b1fa2" },
+        { "name": "F-Droid", "slug": "fdroid", "url": "https://f-droid.org", "desc": "开源安卓应用仓库", "icon": "simple-icons:fdroid", "color": "#1976d2" },
+        { "name": "SourceForge", "slug": "sourceforge", "url": "https://sourceforge.net", "desc": "老牌开源项目下载站", "icon": "simple-icons:sourceforge", "color": "#ff6600" }
+      ]
+    },
+    {
+      "slug": "webmaster",
+      "name": "站长工具",
+      "desc": "站点分析、SEO 查询与流量统计，建站运营辅助。",
+      "keywords": "站长工具,SEO查询,网站统计,域名查询,建站工具",
+      "color": "#64748b",
+      "icon": "lucide:wrench",
+      "home": { "show": false, "layout": "grid", "moreLabel": "更多" },
+      "sites": [
+        { "name": "站长之家", "slug": "chinaz", "url": "https://www.chinaz.com", "desc": "综合站长工具与资讯", "icon": null, "mono": "站", "color": "#2b7fd4" },
+        { "name": "爱站网", "slug": "aizhan", "url": "https://www.aizhan.com", "desc": "SEO 数据查询分析", "icon": null, "mono": "爱", "color": "#e8542f" },
+        { "name": "百度统计", "slug": "baidu-tongji", "url": "https://tongji.baidu.com", "desc": "网站流量统计分析", "icon": "simple-icons:baidu", "color": "#2932e1" },
+        { "name": "Google Analytics", "slug": "google-analytics", "url": "https://analytics.google.com", "desc": "全球通用的流量分析", "icon": "simple-icons:googleanalytics", "color": "#e37400" },
+        { "name": "Cloudflare", "slug": "cloudflare", "url": "https://www.cloudflare.com", "desc": "CDN 与网站安全防护", "icon": "simple-icons:cloudflare", "color": "#f38020" },
+        { "name": "Namesilo", "slug": "namesilo", "url": "https://www.namesilo.com", "desc": "域名注册与管理", "icon": null, "mono": "N", "color": "#12a05c" }
+      ]
+    }
+  ]
+}

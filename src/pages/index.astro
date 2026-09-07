@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site';
+import { homeCategories, categories, siteCount } from '../lib/data';
+import { websiteNode, itemList } from '../lib/seo';
+import Hero from '../components/home/Hero.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import SiteGrid from '../components/home/SiteGrid.astro';
+import PreviewGrid from '../components/home/PreviewGrid.astro';
+
+const title = `${SITE.name}_网站导航大全 | ${SITE.slogan}`;
+const description = `${SITE.description}已收录 ${siteCount} 个优质站点。`;
+const keywords = `${SITE.keywords},${categories.map((c) => c.name).join(',')}`;
+const ld = [
+  websiteNode,
+  itemList(
+    '网站分类列表',
+    categories.map((c) => ({ name: c.name, url: `${SITE.url}/${c.slug}/` }))
+  ),
+];
+---
+<BaseLayout title={title} description={description} keywords={keywords} canonical={`${SITE.url}/`} ld={ld}>
+  <Hero />
+
+  <div class="mt-8 space-y-9">
+    {homeCategories.map((cat) => (
+      <section aria-labelledby={`sec-${cat.slug}`}>
+        <SectionHeader
+          id={`sec-${cat.slug}`}
+          title={cat.name}
+          moreHref={`/${cat.slug}/`}
+          moreLabel={cat.home.moreLabel}
+        />
+        {cat.home.layout === 'preview' ? (
+          <PreviewGrid sites={cat.sites} label={`${cat.name}站点列表`} />
+        ) : (
+          <SiteGrid sites={cat.sites} label={`${cat.name}站点列表`} />
+        )}
+      </section>
+    ))}
+  </div>
+</BaseLayout>
