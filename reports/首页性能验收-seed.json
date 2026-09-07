@@ -1,0 +1,173 @@
+{
+  "measuredAt": "2026-09-07T14:10:30.575Z",
+  "environment": "本机Node生产构建，回环网络；非公网测速",
+  "driver": "seed",
+  "initialCards": 299,
+  "cold": {
+    "status": 200,
+    "firstByteMs": 215.98,
+    "totalMs": 222.01,
+    "bytes": 1791646,
+    "etag": null,
+    "cacheControl": null
+  },
+  "warmMedianMs": 62,
+  "warm": [
+    {
+      "status": 200,
+      "firstByteMs": 64.76,
+      "totalMs": 68.33,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 58.18,
+      "totalMs": 62,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 51.61,
+      "totalMs": 54.83,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 65.09,
+      "totalMs": 68.83,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 54.9,
+      "totalMs": 58.85,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    }
+  ],
+  "concurrent": [
+    {
+      "status": 200,
+      "firstByteMs": 48.85,
+      "totalMs": 76.28,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 96.93,
+      "totalMs": 101.08,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 154.04,
+      "totalMs": 157.68,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 196.3,
+      "totalMs": 200.75,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 242.87,
+      "totalMs": 246.56,
+      "bytes": 1791646,
+      "etag": null,
+      "cacheControl": null
+    }
+  ],
+  "pages": {
+    "/favorites/": {
+      "status": 200,
+      "firstByteMs": 20.07,
+      "totalMs": 20.39,
+      "bytes": 85593,
+      "etag": null,
+      "cacheControl": null
+    },
+    "/admin/login/": {
+      "status": 200,
+      "firstByteMs": 10.48,
+      "totalMs": 10.57,
+      "bytes": 6307,
+      "etag": null,
+      "cacheControl": "no-store"
+    }
+  },
+  "indices": {
+    "/search-index.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 19.94,
+        "totalMs": 21.5,
+        "bytes": 782572,
+        "etag": "\"ce1405e5b035b9199b5942302d5c407c4ed6e26a38eac147d1e34eb60721a2ba\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 7.63,
+        "totalMs": 7.65,
+        "bytes": 0,
+        "etag": "\"ce1405e5b035b9199b5942302d5c407c4ed6e26a38eac147d1e34eb60721a2ba\"",
+        "cacheControl": "public, no-cache"
+      }
+    },
+    "/personal-sites.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 20.58,
+        "totalMs": 22.83,
+        "bytes": 747792,
+        "etag": "\"54489e10caa8cbc03be8e3f6b5f3cbb4221606f826a6b823b422633aa8087ddc\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 1.47,
+        "totalMs": 1.48,
+        "bytes": 0,
+        "etag": "\"54489e10caa8cbc03be8e3f6b5f3cbb4221606f826a6b823b422633aa8087ddc\"",
+        "cacheControl": "public, no-cache"
+      }
+    },
+    "/history-destinations.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 9.17,
+        "totalMs": 10.1,
+        "bytes": 412063,
+        "etag": "\"77127e0626d32f0688c81d0d3ed1669aeb4ad761fdc9056fb220e58dbc47bacc\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 11.74,
+        "totalMs": 11.75,
+        "bytes": 0,
+        "etag": "\"77127e0626d32f0688c81d0d3ed1669aeb4ad761fdc9056fb220e58dbc47bacc\"",
+        "cacheControl": "public, no-cache"
+      }
+    }
+  }
+}

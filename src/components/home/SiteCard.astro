@@ -1,22 +1,23 @@
 ---
-/** 网格中的站点小卡片，整卡可点击并在新窗口打开。 */
+/** 首页与同类推荐入口：整卡直达官网，收藏按钮独立操作。 */
 import type { Site } from '../../lib/types';
 import Card from '../ui/Card.astro';
 import BrandIcon from '../ui/BrandIcon.astro';
-
-interface Props {
-  site: Site;
-}
+import FavoriteButton from '../ui/FavoriteButton.astro';
+import { Icon } from 'astro-icon/components';
+interface Props { site: Pick<Site, 'id' | 'name' | 'slug' | 'url' | 'desc' | 'icon' | 'color' | 'mono' | 'categorySlug'>; }
 const { site } = Astro.props;
 ---
-<Card href={site.url} external ariaLabel={`${site.name}：${site.desc}（新窗口打开）`} class="group px-3 py-3">
-  <div class="flex items-center gap-2.5">
-    <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={36} />
-    <div class="min-w-0">
-      <div class="truncate text-sm font-medium text-ink-900 transition-colors group-hover:text-brand-500 dark:text-white">
-        {site.name}
-      </div>
-      <div class="truncate text-[11px] text-ink-300 dark:text-white/45">{site.desc}</div>
-    </div>
+<Card siteId={site.id} class="nav-card nav-card--with-external nav-card--with-favorite group">
+  <BrandIcon inline icon={site.icon} mono={site.mono ?? Array.from(site.name)[0]} color={site.color} size={36} class="nav-card-icon" />
+  <div class="nav-card-copy">
+    <a href={site.url} target="_blank" rel="noopener noreferrer" class="nav-card-detail block truncate font-medium text-ink-900 group-hover:text-brand-500 dark:text-white" aria-label={`直达 ${site.name} 官网（新窗口打开）`} title={site.name}>
+      {site.name}
+    </a>
+    <p class="truncate text-ink-300 dark:text-white/45" title={site.desc}>{site.desc}</p>
   </div>
+  <a href={site.url} target="_blank" rel="noopener noreferrer" class="nav-card-external text-ink-300 hover:text-brand-500" aria-label={`直达 ${site.name} 官网（新窗口打开）`} title="直达官网（新窗口打开）">
+    <Icon is:inline name="lucide:circle-chevron-right" style="width:16px;height:16px" />
+  </a>
+  <FavoriteButton siteId={site.id} name={site.name} />
 </Card>

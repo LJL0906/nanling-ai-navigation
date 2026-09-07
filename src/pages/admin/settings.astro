@@ -1,0 +1,43 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+const fields = [
+  { key: 'name', label: '站点名称', max: 100 },
+  { key: 'url', label: '站点正式地址（仅域名，可含端口）', max: 2048, type: 'url' as const },
+  { key: 'slogan', label: '站点标语', max: 200 },
+  { key: 'heroTitle', label: '首页标题', max: 200 },
+  { key: 'heroSubtitle', label: '首页副标题', max: 500 },
+  { key: 'description', label: 'SEO 默认描述', max: 1000 },
+  { key: 'keywords', label: 'SEO 默认关键词', max: 1000 },
+];
+---
+<AdminLayout title="全站配置" active="settings">
+  <section class="admin-panel settings-panel" data-settings-admin>
+    <h1>全站配置</h1>
+    <p>保存后，下一次加载前台页面即读取新配置。正式地址会影响 canonical、分享信息和网站地图，请填写对外使用的域名。</p>
+    <p>仅维护实际生效的站点信息与首页展示数量；历史快照、用户身份和精选资源不在此编辑。</p>
+    <p data-settings-message role="status" aria-live="polite">正在加载配置…</p>
+    <p data-settings-login hidden><a href="/admin/login/?next=%2Fadmin%2Fsettings%2F" target="_blank" rel="noopener noreferrer">在新标签页重新登录，再返回此页重试</a></p>
+    <form data-settings-form>
+      <fieldset data-settings-fields disabled>
+        <div class="settings-grid">
+          {fields.map(field => <label>{field.label}<input name={field.key} type={field.type ?? 'text'} maxlength={field.max} required /></label>)}
+          <label>首页每个分类每批展示数量（1–48）<input name="homeSectionPageSize" type="number" min="1" max="48" step="1" required /></label>
+        </div>
+      </fieldset>
+      <div class="settings-actions">
+        <button type="submit" class="admin-primary" data-settings-save disabled>保存配置</button>
+        <button type="button" data-settings-refresh>重新加载</button>
+        <a href="/" target="_blank" rel="noopener noreferrer">查看前台</a>
+      </div>
+    </form>
+  </section>
+</AdminLayout>
+<style>
+  .settings-panel{padding:24px;max-width:1000px}.settings-panel h1{font-size:20px;margin:0 0 12px}
+  .settings-panel p{line-height:1.7;color:#64748b;font-size:14px}.settings-panel [data-error=true]{color:#b91c1c}
+  fieldset{border:0;padding:0;margin:20px 0}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  .settings-grid label{display:grid;gap:8px;font-size:14px}.settings-grid input{width:100%;min-width:0}
+  .settings-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px}.settings-actions a{color:#2563eb}
+  @media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-panel{padding:16px}}
+</style>
+<script>import '../../scripts/admin-settings';</script>

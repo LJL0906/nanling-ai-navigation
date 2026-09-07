@@ -1,13 +1,16 @@
 ---
+import '../../styles/navigation-cards.css';
+
 /** 通用白底圆角卡片。传 href 时渲染为链接并带 hover 抬升效果。 */
 interface Props {
   href?: string;
+  siteId?: string;
   external?: boolean;
   class?: string;
   ariaLabel?: string;
 }
 
-const { href, external = false, class: cls = '', ariaLabel } = Astro.props;
+const { href, siteId, external = false, class: cls = '', ariaLabel } = Astro.props;
 const base =
   'block rounded-xl border border-hairline bg-surface transition duration-200 dark:border-white/10 dark:bg-white/5';
 const interactive =
@@ -15,6 +18,7 @@ const interactive =
 const Tag = href ? 'a' : 'div';
 ---
 <Tag
+  data-site-id={siteId}
   class:list={[base, href && interactive, cls]}
   href={href}
   aria-label={ariaLabel}

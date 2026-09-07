@@ -1,0 +1,83 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Icon } from 'astro-icon/components';
+import Button from './Button.astro';
+
+/** 通用空状态：图标、标题、说明和底部操作；actions 插槽支持自定义按钮。 */
+interface Props extends HTMLAttributes<'div'> {
+  title: string;
+  description?: string;
+  icon?: string;
+  actionLabel?: string;
+  actionHref?: string;
+}
+const {
+  title, description, icon = 'lucide:inbox', actionLabel, actionHref,
+  class: className, ...attributes
+} = Astro.props;
+const hasActions = Astro.slots.has('actions') || (actionLabel && actionHref);
+---
+<div {...attributes} class:list={['empty-state', className]}>
+  <div class="empty-state__illustration" aria-hidden="true">
+    <div class="empty-state__icon"><Icon name={icon} width={40} height={40} /></div>
+    <span class="empty-state__spark empty-state__spark--one"></span>
+    <span class="empty-state__spark empty-state__spark--two"></span>
+  </div>
+  <h2 class="empty-state__title">{title}</h2>
+  {description && <p class="empty-state__description">{description}</p>}
+  {hasActions && <div class="empty-state__actions">
+    <slot name="actions">
+      <Button href={actionHref} class="min-w-36">{actionLabel}<Icon name="lucide:arrow-right" width={16} height={16} /></Button>
+    </slot>
+  </div>}
+</div>
+
+<style>
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 360px;
+    padding: 44px 24px 52px;
+    text-align: center;
+  }
+  /* 不让 flex 覆盖客户端脚本控制的隐藏状态。 */
+  .empty-state[hidden], .empty-state.hidden { display: none; }
+  .empty-state__illustration {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 132px;
+    height: 112px;
+    margin-bottom: 24px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, var(--color-brand-100), transparent 72%);
+  }
+  .empty-state__icon {
+    display: grid;
+    place-items: center;
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--color-brand-100);
+    border-radius: 25px;
+    color: var(--color-brand-500);
+    background: linear-gradient(145deg, #fff, var(--color-brand-50));
+    box-shadow: 0 12px 32px -16px #3777f54d;
+  }
+  .empty-state__spark { position: absolute; border-radius: 50%; background: var(--color-brand-300); }
+  .empty-state__spark--one { width: 8px; height: 8px; top: 12px; right: 10px; }
+  .empty-state__spark--two { width: 5px; height: 5px; bottom: 16px; left: 9px; opacity: .6; }
+  .empty-state__title { margin: 0; color: var(--color-ink-900); font-size: 20px; font-weight: 600; line-height: 1.5; }
+  .empty-state__description { max-width: 420px; margin: 10px 0 0; color: var(--color-ink-400); font-size: 14px; line-height: 1.85; overflow-wrap: anywhere; }
+  .empty-state__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 100%; margin-top: 26px; }
+  :global(.dark) .empty-state__illustration { background: radial-gradient(ellipse, #3777f51a, transparent 72%); }
+  :global(.dark) .empty-state__icon { background: linear-gradient(145deg, #243350, #19243b); border-color: #ffffff14; color: var(--color-brand-300); }
+  :global(.dark) .empty-state__title { color: #f1f5f9; }
+  :global(.dark) .empty-state__description { color: #ffffff8c; }
+  @media (max-width: 640px) {
+    .empty-state { min-height: 320px; padding: 32px 16px 40px; }
+    .empty-state__title { font-size: 18px; }
+  }
+</style>

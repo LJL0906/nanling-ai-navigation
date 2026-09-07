@@ -1,0 +1,59 @@
+/* 动态标签数量不影响分区固有宽度；只让标签栏内部横向滚动。 */
+.home-navigation,
+.home-section,
+.home-section-tabbar,
+.home-section-tabs {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+.home-navigation { width: 100%; }
+.home-section-tabbar { width: 100%; }
+
+/* 只借鉴分区与 Tab 交互，颜色、字体和背景仍沿用本站设计令牌。 */
+.home-section {
+  scroll-margin-top: 76px;
+  padding: 18px;
+  border: 1px solid var(--color-hairline);
+  border-radius: 12px;
+  background: rgb(255 255 255 / .65);
+}
+.home-section-header { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; min-width: 0; }
+.home-section-title { display: flex; align-items: center; flex: none; gap: 8px; font-size: 17px; font-weight: 600; color: var(--color-ink-900); }
+.home-section-title a:hover { color: var(--color-brand-500); }
+/* 分类独立成行，滚动操作保留，但不暴露原生滚动条。 */
+.home-section-tabbar { display: flex; align-items: center; gap: 6px; min-width: 0; margin-bottom: 18px; padding: 5px; border: 1px solid var(--color-hairline); border-radius: 12px; background: #f6f8fc; }
+.home-section-tabs { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
+.home-section-tabs::-webkit-scrollbar { display: none; }
+.home-section-tab { position: relative; flex: none; padding: 8px 14px; border: 1px solid transparent; border-radius: 999px; color: var(--color-ink-500); font-size: 13px; line-height: 20px; cursor: pointer; white-space: nowrap; transition: color .18s, background-color .18s, box-shadow .18s; }
+.home-section-tab:hover { color: var(--color-brand-600); background: var(--color-brand-100); }
+.home-section-tab[aria-selected='true'] { color: var(--color-brand-600); background: white; border-color: var(--color-brand-100); box-shadow: 0 2px 5px rgb(35 65 120 / .07); font-weight: 600; }
+.home-section-tab:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+.home-section-tab-arrow { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 30px; height: 32px; border: 1px solid var(--color-hairline); border-radius: 8px; color: var(--color-ink-500); background: white; cursor: pointer; }
+.home-section-tab-arrow[hidden] { display: none; }
+.home-section-tab-arrow:hover:not(:disabled) { color: var(--color-brand-600); border-color: var(--color-brand-300); }
+.home-section-tab-arrow:disabled { opacity: .3; cursor: default; }
+.home-section-all { flex: none; margin-left: auto; color: var(--color-ink-300); font-size: 12px; }
+.home-section-all:hover { color: var(--color-brand-500); }
+.home-section-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; color: var(--color-ink-300); font-size: 12px; }
+.home-section-more { flex: none; padding: 6px 12px; border: 1px solid var(--color-hairline); border-radius: 6px; color: var(--color-brand-500); cursor: pointer; }
+.home-section-more:hover { background: var(--color-brand-50); }
+.home-section-more:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 3px; }
+#sidebar [data-home-active='true'] { color: var(--color-brand-600); background: var(--color-brand-50); font-weight: 500; }
+.dark .home-section { border-color: rgb(255 255 255 / .1); background: rgb(255 255 255 / .025); }
+.dark .home-section-title { color: white; }
+.dark .home-section-tab { color: rgb(255 255 255 / .55); }
+.dark .home-section-tabbar { background: rgb(255 255 255 / .035); border-color: rgb(255 255 255 / .08); }
+.dark .home-section-tab:hover { color: var(--color-brand-300); background: rgb(55 119 245 / .12); }
+.dark .home-section-tab[aria-selected='true'] { color: var(--color-brand-300); background: rgb(55 119 245 / .18); border-color: rgb(111 150 247 / .25); box-shadow: none; }
+.dark .home-section-tab-arrow { color: var(--color-brand-300); background: rgb(255 255 255 / .05); border-color: rgb(255 255 255 / .1); }
+.dark #sidebar [data-home-active='true'] { color: var(--color-brand-300); background: rgb(55 119 245 / .15); }
+@media (max-width: 767px) {
+  .home-section { padding: 12px; }
+  .home-section-header { flex-wrap: wrap; gap: 8px 12px; }
+  .home-section-title { font-size: 16px; }
+  .home-section-tabbar { margin-bottom: 14px; }
+  .home-section-tab { padding: 8px 12px; }
+  .home-section-all { margin-left: auto; }
+}
+

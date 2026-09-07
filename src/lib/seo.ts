@@ -1,16 +1,22 @@
 import { SITE } from '../config/site';
+import type { SiteSettings } from '../server/settings-validation';
 
 /** 全站共用的 WebSite 节点，其它结构化数据通过 @id 引用它。 */
-export const websiteNode = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  '@id': `${SITE.url}/#website`,
-  name: SITE.name,
-  alternateName: '网站导航大全',
-  url: SITE.url,
-  description: SITE.description,
-  inLanguage: 'zh-CN',
-};
+export function createWebsiteNode(site: SiteSettings) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${site.url}/#website`,
+    name: site.name,
+    alternateName: site.name,
+    url: site.url,
+    description: site.description,
+    inLanguage: 'zh-CN',
+  };
+}
+
+/** 兼容默认值；前台运行时使用 factory，不改写全局配置。 */
+export const websiteNode = createWebsiteNode(SITE);
 
 export function breadcrumb(items: { name: string; url: string }[]) {
   return {

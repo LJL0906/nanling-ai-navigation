@@ -1,0 +1,39 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+<aside class="announcement-toast" data-announcement-toast hidden aria-label="系统公告">
+  <div class="announcement-toast-heading">
+    <span class="announcement-toast-label"><Icon name="lucide:megaphone" width={16} height={16} />系统公告</span>
+    <button type="button" data-announcement-toast-close aria-label="关闭系统公告"><Icon name="lucide:x" width={16} height={16} /></button>
+  </div>
+  <div role="status" aria-live="polite" aria-atomic="true">
+    <h2 data-announcement-toast-title></h2>
+    <p data-announcement-toast-body></p>
+  </div>
+  <a href="/?notifications=announcement">查看公告</a>
+  <div class="announcement-toast-progress" aria-hidden="true"></div>
+</aside>
+<script>import '../../scripts/announcement-toast';</script>
+<style>
+  .announcement-toast { position: fixed; top: max(76px, env(safe-area-inset-top)); right: max(20px, env(safe-area-inset-right)); z-index: 70; width: min(380px, calc(100vw - 32px)); padding: 16px 18px; overflow: hidden; border: 1px solid #dbeafe; border-radius: 14px; background: #fff; color: #1e293b; box-shadow: 0 12px 40px rgb(15 23 42 / .16); }
+  .announcement-toast[hidden] { display: none; }
+  .announcement-toast:not([hidden]) { animation: announcement-enter .2s ease-out; }
+  .announcement-toast-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .announcement-toast-label { display: flex; align-items: center; gap: 7px; color: #2563eb; font-size: 12px; font-weight: 600; }
+  button { display: grid; place-items: center; border: 0; border-radius: 6px; padding: 5px; background: transparent; color: #64748b; cursor: pointer; }
+  button:hover { background: #eff6ff; }
+  h2 { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+  p { margin-top: 6px; max-height: 40vh; overflow-y: auto; font-size: 13px; line-height: 1.7; color: #475569; white-space: pre-wrap; overflow-wrap: anywhere; }
+  a { display: inline-block; margin-top: 8px; color: #2563eb; font-size: 12px; }
+  a:hover { text-decoration: underline; }
+  .announcement-toast-progress { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #3b82f6; transform-origin: left; }
+  .announcement-toast:not([hidden]) .announcement-toast-progress { animation: announcement-countdown 3s linear forwards; }
+  :global(.dark) .announcement-toast { background: #141c2b; color: #e2e8f0; border-color: #334155; }
+  :global(.dark) p { color: #a5b4c8; }
+  :global(.dark) .announcement-toast-label, :global(.dark) a { color: #93c5fd; }
+  :global(.dark) button:hover { background: #263247; }
+  @keyframes announcement-enter { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes announcement-countdown { to { transform: scaleX(0); } }
+  @media (max-width: 640px) { .announcement-toast { right: 16px; } }
+  @media (prefers-reduced-motion: reduce) { .announcement-toast:not([hidden]), .announcement-toast:not([hidden]) .announcement-toast-progress { animation: none; } }
+</style>

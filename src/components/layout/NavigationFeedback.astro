@@ -1,0 +1,16 @@
+---
+/** 只提供非阻塞的导航反馈，不拦截原生链接或表单。 */
+---
+<div class="navigation-feedback" data-navigation-feedback hidden role="status" aria-live="polite" aria-atomic="true">
+  <span class="navigation-feedback__bar" aria-hidden="true"></span>
+  <span class="navigation-feedback__message" data-navigation-message>正在加载页面…</span>
+</div>
+<script>import '../../scripts/navigation-progress';</script>
+<style>
+  .navigation-feedback[hidden] { display: none; }
+  .navigation-feedback { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+  .navigation-feedback__bar { display: block; width: 100%; height: 3px; background: linear-gradient(90deg, #3777f5, #8db5ff, #3777f5); background-size: 200% 100%; animation: navigation-loading 1.2s linear infinite; }
+  .navigation-feedback__message { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 8px 14px; border-radius: 10px; background: #172c50; color: #fff; font-size: 13px; box-shadow: 0 4px 16px #172c5026; }
+  @keyframes navigation-loading { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .navigation-feedback__bar { animation: none; } }
+</style>

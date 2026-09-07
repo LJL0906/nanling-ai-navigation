@@ -1,0 +1,50 @@
+---
+import { Icon } from 'astro-icon/components';
+import { getAdminSession } from '../server/admin-session';
+import '../styles/admin.css';
+interface Props { title: string; description?: string; active?: 'overview' | 'sites' | 'categories' | 'menus' | 'reviews' | 'announcements' | 'settings'; guest?: boolean; }
+const { title, description = '楠灵AI导航管理系统', active = 'sites', guest = false } = Astro.props;
+const username = guest ? '' : getAdminSession(Astro.request)?.username ?? '管理员';
+const items = [
+  { id: 'sites', label: '导航卡片', href: '/admin/sites/', icon: 'lucide:table-2', section: '内容管理' },
+  { id: 'categories', label: '分类管理', href: '/admin/categories/', icon: 'lucide:folder' },
+  { id: 'menus', label: '菜单管理', href: '/admin/menus/', icon: 'lucide:list-tree' },
+  { id: 'reviews', label: '提交审批', href: '/admin/reviews/', icon: 'lucide:clipboard-check' },
+  { id: 'settings', label: '全站配置', href: '/admin/settings/', icon: 'lucide:settings' },
+  { id: 'announcements', label: '系统公告', href: '/admin/announcements/', icon: 'lucide:megaphone' },
+];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · 楠灵管理系统</title><meta name="description" content={description} />
+    <meta name="robots" content="noindex,nofollow" /><meta name="color-scheme" content="light" />
+    <link rel="icon" href="/logo.png" />
+  </head>
+  <body class={guest ? 'admin-login' : 'admin-app'}>
+    {guest ? <slot /> : <>
+      <a href="#admin-content" class="admin-skip">跳至工作区</a>
+      <aside class="admin-sidebar" id="admin-sidebar" aria-label="后台主导航">
+        <a class="admin-brand" href="/admin/sites/"><span class="admin-brand-mark">N</span><span>楠灵管理系统<small>NANLING ADMIN</small></span></a>
+        <nav>{items.map(item => <>
+          {item.section && <p class="admin-nav-section">{item.section}</p>}
+          <a class:list={['admin-nav-item', { 'is-active': active === item.id }]} href={item.href} aria-current={active === item.id ? 'page' : undefined}>
+            <Icon name={item.icon} /><span>{item.label}</span>{active === item.id && <span class="admin-nav-dot"></span>}
+          </a>
+        </>)}</nav>
+        <div class="admin-sidebar-bottom"><a href="/" target="_blank" rel="noopener noreferrer"><Icon name="lucide:external-link" />查看前台网站</a></div>
+      </aside>
+      <button class="admin-backdrop" data-shell-close type="button" aria-label="关闭管理菜单" hidden></button>
+      <div class="admin-main">
+        <header class="admin-topbar">
+          <div class="admin-topbar-left"><button class="admin-menu-toggle" data-shell-toggle type="button" aria-controls="admin-sidebar" aria-expanded="false" aria-label="展开管理菜单"><Icon name="lucide:menu" /></button><nav class="admin-breadcrumb" aria-label="面包屑"><span>管理系统</span><span aria-hidden="true">/</span><strong>{title}</strong></nav></div>
+          <div class="admin-account"><span class="admin-account-avatar">{username.slice(0, 1).toUpperCase()}</span><span class="admin-account-name">{username}<small>系统管理员</small></span><button data-shell-logout type="button" aria-label="退出登录" class="admin-logout"><Icon name="lucide:log-out" /><span>退出登录</span></button></div>
+        </header>
+        <main id="admin-content" class="admin-content"><p data-shell-message class="admin-alert" role="alert" hidden></p><slot /></main>
+      </div>
+    </>}
+    <script>import '../scripts/admin-shell';</script>
+  </body>
+</html>
+

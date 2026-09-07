@@ -1,0 +1,88 @@
+{
+  "checkedAt": "2026-09-07T15:12:57.231Z",
+  "base": "http://127.0.0.1:4325",
+  "mode": "MySQL real API, same-value settings save only; no site/user/menu mutation",
+  "siteFields": [
+    "url",
+    "name",
+    "slogan",
+    "heroTitle",
+    "heroSubtitle",
+    "description",
+    "keywords"
+  ],
+  "results": [
+    {
+      "name": "MySQL配置可读可写",
+      "passed": true
+    },
+    {
+      "name": "匿名设置接口拒绝访问",
+      "passed": true
+    },
+    {
+      "name": "后台设置页需要登录",
+      "passed": true
+    },
+    {
+      "name": "跨站修改拒绝",
+      "passed": true
+    },
+    {
+      "name": "非法首页数量拒绝",
+      "passed": true
+    },
+    {
+      "name": "错误版本冲突保护",
+      "passed": true
+    },
+    {
+      "name": "同值保存及接口回读一致",
+      "passed": true
+    },
+    {
+      "name": "数据库保存配置与接口一致",
+      "passed": true
+    },
+    {
+      "name": "首页品牌及标题读取配置",
+      "passed": true
+    },
+    {
+      "name": "首页数量传递客户端",
+      "passed": true
+    },
+    {
+      "name": "sitemap读取配置域名",
+      "passed": true
+    },
+    {
+      "name": "/articles/已删除并返回404",
+      "passed": true
+    },
+    {
+      "name": "/quick-search/已删除并返回404",
+      "passed": true
+    },
+    {
+      "name": "标签目录具有真实筛选链接",
+      "passed": true
+    },
+    {
+      "name": "标签筛选目标可访问",
+      "passed": true
+    },
+    {
+      "name": "登录后设置表单与脚本可访问",
+      "passed": true
+    },
+    {
+      "name": "浏览器会话读取设置成功",
+      "passed": true
+    },
+    {
+      "name": "Cookie写请求必须携带同源Origin",
+      "passed": true
+    }
+  ]
+}

@@ -1,29 +1,8 @@
 ---
-/** 资讯社区使用的大卡片：预览图 + 名称描述 + 访问按钮。 */
+/** 资讯站点也使用紧凑卡片，保持所有导航卡片尺寸一致。 */
 import type { Site } from '../../lib/types';
-import Card from '../ui/Card.astro';
-import Button from '../ui/Button.astro';
-import PreviewThumb from './PreviewThumb.astro';
-
-interface Props {
-  site: Site;
-}
+import SiteCard from './SiteCard.astro';
+interface Props { site: Site; }
 const { site } = Astro.props;
 ---
-<Card class="p-3">
-  <PreviewThumb site={site} />
-  <div class="mt-3 flex items-end justify-between gap-3">
-    <div class="min-w-0">
-      <a
-        href={site.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="block truncate text-sm font-medium text-ink-900 transition-colors hover:text-brand-500 dark:text-white"
-      >
-        {site.name}
-      </a>
-      <p class="mt-1 truncate text-xs text-ink-300 dark:text-white/45">{site.desc}</p>
-    </div>
-    <Button href={site.url} external variant="soft" size="sm" ariaLabel={`访问 ${site.name}（新窗口打开）`}>访问</Button>
-  </div>
-</Card>
+<SiteCard site={site} />

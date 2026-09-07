@@ -1,0 +1,58 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import '../../styles/admin-content.css';
+---
+<AdminLayout title="提交记录审核" description="管理网站提交记录的审核结果" active="reviews">
+  <section class="reviews" data-submission-reviews>
+    <div hidden><p id="review-account" hidden>正在检查登录状态……</p><button id="review-logout" type="button" hidden>退出登录</button></div>
+    <section class="admin-panel" id="review-query-title" aria-label="查询条件">
+    <form class="admin-filter" id="review-filters">
+      <label>审核状态<select name="status" id="review-status"><option value="pending">待审核</option><option value="approved">已通过</option><option value="rejected">已拒绝</option></select></label>
+      <label>站点名称<input type="search" id="review-query" name="q" maxlength="100" placeholder="请输入站点名称" /></label>
+      <button type="submit" class="admin-primary">查询</button><button type="reset" id="review-reset">重置</button>
+    </form>
+    </section>
+    <section class="admin-panel records-panel" id="review-records-title" aria-label="提交记录">
+    <p id="review-message" role="status" aria-live="polite"></p>
+    <div class="admin-table-wrap" role="region" aria-label="提交记录表格" tabindex="0">
+      <table class="admin-table review-table" aria-label="提交记录列表">
+        <thead><tr><th scope="col">序号</th><th scope="col">站点名称</th><th scope="col">所属分类</th><th scope="col">审核状态</th><th scope="col">提交时间</th><th scope="col">审核人</th><th scope="col">审核时间</th><th scope="col">操作</th></tr></thead>
+        <tbody id="review-list" aria-busy="false"></tbody>
+      </table>
+    </div>
+    <nav class="admin-pagination" aria-label="审核分页"><span id="review-page">尚未加载</span><div class="admin-pagination-actions"><label>每页条数<select id="review-size"><option value="10">10</option></select></label><button id="review-prev" type="button" disabled>上一页</button><button id="review-next" type="button" disabled>下一页</button></div></nav>
+    </section>
+    <dialog class="content-dialog" id="review-dialog" aria-labelledby="review-dialog-title">
+      <header class="content-dialog-header"><div><h2 id="review-dialog-title">提交详情</h2></div><button type="button" class="content-dialog-close" data-review-close aria-label="关闭弹窗" autofocus>×</button></header>
+      <div class="content-dialog-body">
+        <dl id="review-dialog-fields" class="content-details"></dl>
+        <form id="review-form" hidden>
+          <div class="content-fields"><label class="content-wide" for="review-reason">审核理由 <span class="admin-muted">必填，最多 1000 字</span>
+          <textarea id="review-reason" required maxlength="1000" rows="4" placeholder="请填写通过或拒绝的理由，审核结果将通知提交者"></textarea></label></div>
+          <p id="review-dialog-message" role="alert" aria-live="assertive"></p>
+          <footer class="content-dialog-footer"><button type="button" class="secondary" data-review-close>取消</button><button type="submit" value="rejected" class="content-danger">拒绝</button><button type="submit" value="approved" class="admin-primary">通过并发布</button></footer>
+        </form>
+      </div>
+      <footer class="content-dialog-footer" id="review-detail-footer"><button type="button" class="secondary" data-review-close>关闭</button></footer>
+    </dialog>
+    <noscript>请启用 JavaScript 后使用审核功能。</noscript>
+  </section>
+</AdminLayout>
+<script>
+  import '../../scripts/admin-reviews';
+</script>
+<style is:global>
+  .reviews .review-table { table-layout: fixed; min-width: 990px; }
+  .reviews .review-table th:nth-child(1) { width: 58px; }
+  .reviews .review-table th:nth-child(2) { width: 185px; }
+  .reviews .review-table th:nth-child(3) { width: 120px; }
+  .reviews .review-table th:nth-child(4) { width: 100px; }
+  .reviews .review-table th:nth-child(5), .reviews .review-table th:nth-child(7) { width: 150px; }
+  .reviews .review-table th:nth-child(6) { width: 90px; }
+  .reviews .review-table th:nth-child(8) { width: 120px; }
+  .reviews span.review-ellipsis { display: block; }
+  .reviews .review-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .reviews #review-message:not(:empty) { padding: 12px 22px; }
+  .reviews #review-message[data-error="true"], .reviews #review-dialog-message { color: #b42318; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .reviews #review-list[aria-busy="true"] { opacity: .6; }
+</style>

@@ -5,7 +5,8 @@ interface Props {
   class?: string;
 }
 
+const { site } = await Astro.locals.getRuntimeSettings();
 const { size = 40, class: className } = Astro.props;
 ---
-<img src="/logo.png" width={size} height={size} class={className} alt="楠灵AI 导航 Logo" />
+<img src="/logo.png" width={size} height={size} class={className} alt={`${site.name} Logo`} />
 

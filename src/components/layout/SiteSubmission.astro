@@ -1,0 +1,74 @@
+---
+import { Icon } from 'astro-icon/components';
+import '../../styles/site-submission.css';
+---
+<button class="submit-site-fab" type="button" data-submit-site-open aria-haspopup="dialog" aria-controls="submit-site-dialog">
+  <span class="submit-site-fab__icon"><Icon name="lucide:plus" /></span>
+  <span>提交站点</span>
+  <span class="submit-site-fab__spark"><Icon name="lucide:sparkles" /></span>
+</button>
+<p data-submission-entry-message role="status" aria-live="polite" class="site-submission__entry-message"></p>
+
+<p data-submission-toast role="status" aria-live="polite" aria-atomic="true" class="site-submission__toast"></p>
+
+<dialog id="submit-site-dialog" class="site-submission" aria-labelledby="submission-title" aria-describedby="submission-description">
+  <div class="site-submission__header">
+    <span class="site-submission__badge"><Icon name="lucide:compass" /></span>
+    <button type="button" class="site-submission__close" data-submission-close aria-label="关闭提交站点"><Icon name="lucide:x" /></button>
+    <h2 id="submission-title">提交站点</h2>
+    <p id="submission-description" class="site-submission__hint">登录后提交，审核后展示。</p>
+  </div>
+  <form class="site-submission__form" data-submission-form>
+    <fieldset class="site-submission__fields">
+      <legend class="sr-only">站点信息</legend>
+      <div class="site-submission__label-row">
+        <label for="submission-category">站点分类 <span>*</span></label>
+        <label class="site-submission__custom-toggle"><input type="checkbox" name="useCustomCategory" /> 自定义分类</label>
+      </div>
+      <select id="submission-category" name="categoryId" required aria-describedby="submission-category-status"><option value="">正在加载分类…</option></select>
+      <input name="customCategory" type="text" maxlength="40" placeholder="输入你建议的新分类，例如：效率工具" aria-label="自定义分类" hidden disabled />
+      <p id="submission-category-status" class="site-submission__hint" data-category-status aria-live="polite"></p>
+      <label for="submission-name">站点名称 <span>*</span></label>
+      <input id="submission-name" name="name" type="text" required maxlength="80" placeholder="请输入站点名称" autocomplete="off" />
+      <label for="submission-url">站点链接 <span>*</span></label>
+      <div class="site-submission__input-icon"><Icon name="lucide:link" /><input id="submission-url" name="url" type="url" required maxlength="2048" placeholder="https://example.com" inputmode="url" /></div>
+      <div class="site-submission__label-row site-submission__icon-label"><label>站点图标 <small>选填</small></label></div>
+      <div class="site-submission__tabs" role="group" aria-label="图标来源">
+        <button type="button" data-icon-mode="upload" aria-pressed="true"><Icon name="lucide:upload" />上传图标</button>
+        <button type="button" data-icon-mode="url" aria-pressed="false"><Icon name="lucide:link" />在线地址</button>
+      </div>
+      <div class="site-submission__upload" data-icon-upload>
+        <span class="site-submission__preview"><Icon name="lucide:image" /><img data-icon-preview alt="站点图标预览" hidden referrerpolicy="no-referrer" /></span>
+        <label for="submission-file"><strong data-upload-label>点击选择图标</strong><span>PNG、JPG、WebP、GIF，小于 1 MB</span></label>
+        <input id="submission-file" name="iconFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="选择站点图标" />
+      </div>
+      <div data-icon-online hidden>
+        <input name="iconUrl" type="url" maxlength="2048" placeholder="https://example.com/icon.png" aria-label="在线图标地址" disabled />
+      </div>
+      <label for="submission-remark">备注 <small>选填</small></label>
+      <textarea id="submission-remark" name="remark" rows="3" maxlength="500" placeholder="补充说明（选填）" aria-describedby="submission-remark-hint"></textarea>
+      <p id="submission-remark-hint" class="site-submission__hint">最多 500 字，请勿填写敏感信息。</p>
+    </fieldset>
+    <p class="site-submission__message" data-submission-message role="status" aria-live="polite" tabindex="-1" hidden></p>
+    <div class="site-submission__footer">
+      <span><Icon name="lucide:shield-check" />审核后公开展示</span>
+      <div><button type="button" class="site-submission__cancel" data-submission-close>取消</button><button type="submit" class="site-submission__submit"><span data-submit-label>提交站点</span><Icon name="lucide:arrow-up-right" /></button></div>
+    </div>
+  </form>
+</dialog>
+<script>
+  import '../../scripts/site-submission';
+</script>
+
+
+
+
+<style>
+  .site-submission__entry-message:not(:empty) { position: fixed; right: 1.5rem; bottom: 6rem; z-index: 80; max-width: min(22rem, calc(100vw - 3rem)); padding: .65rem .9rem; border-radius: .75rem; background: var(--color-card, #fff); color: var(--color-foreground, #334155); box-shadow: 0 4px 20px #0002; font-size: .8rem; }
+  :global(.dark) .site-submission__entry-message:not(:empty) { background: #1a2030; color: #e3e9f5; }
+  .submit-site-fab[aria-busy="true"] { opacity: .7; cursor: wait; }
+  .site-submission__toast:empty { display: none; }
+  .site-submission__toast:not(:empty) { position: fixed; top: max(24px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 20px; border: 1px solid #bbf7d0; border-radius: 12px; background: #f0fdf4; color: #166534; box-shadow: 0 8px 28px #14532d1a; font-size: 14px; pointer-events: none; }
+  .site-submission__toast:not(:empty)::before { content: '✓'; font-weight: 700; }
+  :global(.dark) .site-submission__toast:not(:empty) { background: #163d32; border-color: #28644f; color: #94dbbb; }
+</style>

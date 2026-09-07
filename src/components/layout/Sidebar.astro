@@ -1,16 +1,37 @@
 ---
 /** 左侧固定导航栏。移动端为抽屉，由 .drawer-open 控制。 */
 import { Icon } from 'astro-icon/components';
-import { SITE } from '../../config/site';
-import { SIDEBAR_MAIN, SIDEBAR_SHORTCUTS } from '../../config/nav';
+import type { MenuSeedItem } from '../../server/menu-seed';
+import MenuIcon from './MenuIcon.astro';
+import { getNavigation } from '../../lib/data';
 import Logo from './Logo.astro';
 import IconButton from '../ui/IconButton.astro';
 
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+// 仓储异常直接传播；seed 模式也由服务端统一提供数据。
+interface Props { menus: MenuSeedItem[]; }
+const { menus } = Astro.props;
+const sidebarMain = menus.filter((item) => item.location === 'sidebar' && item.parentId === null);
+const { siteCount, categories } = await getNavigation();
+const formattedSiteCount = siteCount.toLocaleString('zh-CN');
 const path = Astro.url.pathname;
-const isActive = (href: string) => {
-  if (href.includes('#')) return false;
-  return href === '/' ? path === '/' : path.startsWith(href);
+const text = (item: MenuSeedItem, key: string) => typeof item.payload[key] === 'string' ? item.payload[key] as string : undefined;
+const menuId = (item: MenuSeedItem) => text(item, 'menuId') || (item.href === '/' ? '/' : item.id);
+// 只有实际链接与显式锚点一致才启用首页拦截，新增普通链接不会被改成锚点。
+const homeAnchor = (item: MenuSeedItem) => {
+  const anchor = text(item, 'homeAnchor');
+  return anchor && item.href === `/#${anchor}` ? anchor : undefined;
 };
+const isActive = (item: MenuSeedItem) => {
+  const href = text(item, 'categoryPath') || item.href;
+  if (!href || !href.startsWith('/') || href.startsWith('//') || /[?#]/.test(href) || href === '/') return false;
+  return path === href || path.startsWith(href.endsWith('/') ? href : `${href}/`);
+};
+const linkAttributes = (item: MenuSeedItem) => ({
+  target: text(item, 'target'),
+  rel: [text(item, 'rel'), text(item, 'target') === '_blank' ? 'noopener noreferrer' : undefined].filter(Boolean).join(' ') || undefined,
+});
 
 const linkBase =
   'relative flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-sm transition-colors';
@@ -21,83 +42,166 @@ const linkOn =
 ---
 <aside
   id="sidebar"
-  class="drawer-panel fixed inset-y-0 left-0 z-50 flex w-rail flex-col border-r border-hairline/70 bg-transparent lg:translate-x-0 dark:border-white/10"
+  class="drawer-panel fixed inset-y-0 left-0 z-50 flex w-rail flex-col border-r border-hairline/70 bg-surface lg:translate-x-0 lg:bg-transparent dark:border-white/10 dark:bg-[#101827] dark:lg:bg-transparent"
   aria-label="站点主导航"
 >
   <div class="flex items-start justify-between gap-2 px-5 pt-5 pb-4">
     <a href="/" class="flex items-center gap-2.5" aria-label={`${SITE.name} 首页`}>
       <Logo size={38} />
-      <span class="leading-tight">
-        <strong class="block text-[17px] font-semibold tracking-tight text-ink-900 dark:text-white">{SITE.name}</strong>
-        <small class="block text-[11px] text-ink-300 dark:text-white/45">{SITE.slogan}</small>
+      <span class="sidebar-brand">
+        <span class="sr-only">{SITE.name}</span>
+        <svg class="sidebar-brand__wordmark" viewBox="0 0 142 30" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="sidebar-brand-ink" x1="0" y1="0" x2="1" y2="0">
+              <stop class="sidebar-brand__ink-start" offset="0%" />
+              <stop class="sidebar-brand__ink-end" offset="100%" />
+            </linearGradient>
+          </defs>
+          <text x="1" y="23" fill="url(#sidebar-brand-ink)" textLength="135" lengthAdjust="spacing">{SITE.name}</text>
+        </svg>
+        <small class="sidebar-brand__slogan">{SITE.slogan}</small>
       </span>
     </a>
     <IconButton icon="lucide:x" label="关闭导航菜单" class="lg:hidden" data-drawer-close />
   </div>
 
-  <div class="scrollbar-hidden flex-1 overflow-y-auto px-4 pb-4">
+  <div class="menu-list-region relative min-h-0 flex-1">
+    <div class="menu-list-loading" data-menu-list-loading role="status" aria-label="菜单加载中" aria-live="polite">
+      <span class="menu-list-spinner" aria-hidden="true"></span>
+    </div>
+    <div class="scrollbar-hidden h-full overflow-y-auto px-4 pb-4" data-menu-scroll>
     <nav aria-label="主导航">
-      <p class="mb-2 px-3 text-[10px] font-semibold tracking-[0.16em] text-ink-300 dark:text-white/35">导航</p>
-      <ul class="space-y-0.5">
-        {SIDEBAR_MAIN.map((item) => (
-          <li>
+      <p id="menu-order-help" class="sr-only">首页固定在首位，不参与排序。拖动分类菜单右侧手柄调整菜单及内容分区顺序；也可聚焦手柄后按上下方向键移动，Home 或 End 移至首尾。拖动时按 Esc 取消。顺序保存在当前浏览器。</p>
+      <ul class="space-y-0.5" data-menu-order data-menu-pending>
+        {sidebarMain.map((item) => (
+          <li class="menu-order-item" data-menu-id={menuId(item)}>
             <a
               href={item.href}
-              class:list={[linkBase, isActive(item.href) ? linkOn : linkIdle]}
-              aria-current={isActive(item.href) ? 'page' : undefined}
+              {...linkAttributes(item)}
+              data-home-anchor={homeAnchor(item)}
+              data-home-start={path === '/' && item.href === '/' ? '' : undefined}
+              class:list={[linkBase, 'menu-order-link', isActive(item) ? linkOn : linkIdle]}
+              aria-current={isActive(item) ? 'page' : undefined}
             >
-              <Icon name={item.icon} style="width:18px;height:18px" />
+              <MenuIcon name={item.icon} style="width:18px;height:18px" />
               <span>{item.label}</span>
             </a>
+            {menuId(item) !== '/' && <button
+              type="button"
+              class="menu-order-handle"
+              data-menu-handle
+              aria-label={`调整${item.label}的位置`}
+              aria-describedby="menu-order-help"
+              title="拖动排序，或按上下方向键调整"
+            >
+              <Icon name="lucide:grip-vertical" style="width:16px;height:16px" />
+            </button>}
           </li>
         ))}
       </ul>
+      <p class="menu-order-status" data-menu-status role="status" aria-live="polite" aria-atomic="true"></p>
     </nav>
 
-    <hr class="my-3 border-hairline dark:border-white/10" />
-
-    <nav aria-label="个人收藏与历史">
-      <p class="mb-2 px-3 text-[10px] font-semibold tracking-[0.16em] text-ink-300 dark:text-white/35">我的空间</p>
-      <ul class="space-y-0.5">
-        {SIDEBAR_SHORTCUTS.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class:list={[linkBase, isActive(item.href) ? linkOn : linkIdle]}
-              aria-current={isActive(item.href) ? 'page' : undefined}
-            >
-              <Icon name={item.icon} style="width:18px;height:18px" />
-              <span>{item.label}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
   </div>
 
-  <div class="flex items-center justify-between border-t border-hairline px-5 py-3 dark:border-white/10">
-    <button
-      type="button"
-      class="theme-switch hidden"
-      aria-label="切换主题"
-      title="切换主题"
-      aria-pressed="false"
-      data-theme-toggle
-    >
-      <span class="theme-switch__track" aria-hidden="true">
-        <Icon name="lucide:sun" style="width:13px;height:13px" class="theme-switch__sun" />
-        <Icon name="lucide:moon" style="width:13px;height:13px" class="theme-switch__moon" />
-        <span class="theme-switch__thumb"></span>
+  </div>
+
+  <section class="navigation-status" aria-label="全站导航统计">
+    <div class="navigation-status__heading">
+      <span class="navigation-status__identity">
+        <Icon name="lucide:cpu" style="width:14px;height:14px" />
+        <span>导航数据中心</span>
       </span>
-      <span class="sr-only">切换浅色和深色主题</span>
-    </button>
-    <IconButton icon="lucide:settings" label="设置" href="/settings/" />
-  </div>
+      <span class="navigation-status__health" title="本次页面请求已成功读取导航数据，不代表第三方站点可用性检测">
+        <span class="navigation-status__pulse" aria-hidden="true"></span>
+        运行正常
+      </span>
+    </div>
+    <div class="navigation-status__metrics">
+      <span class="navigation-status__total"><strong>{formattedSiteCount}</strong><span>个导航</span></span>
+      <span class="navigation-status__categories">覆盖 <strong>{categories.length}</strong> 个分类</span>
+    </div>
+    <div class="navigation-status__signal" aria-hidden="true"><span></span></div>
+  </section>
 </aside>
 
 <button
-  class="drawer-scrim fixed inset-0 z-40 hidden bg-ink-900/30 backdrop-blur-[1px] lg:!hidden"
+  class="drawer-scrim fixed inset-0 z-40 bg-ink-900/30 backdrop-blur-[1px] lg:!hidden"
   aria-label="关闭导航菜单"
   tabindex="-1"
   data-drawer-close
 ></button>
+
+<noscript><style>
+  [data-menu-pending] { visibility: visible !important; }
+  [data-menu-list-loading] { display: none !important; }
+</style></noscript>
+<style>
+  .navigation-status { flex-shrink: 0; margin: 0 20px; padding: 14px 0 16px; border-top: 1px solid rgb(125 146 180 / 14%); }
+  .navigation-status__heading, .navigation-status__identity, .navigation-status__health, .navigation-status__metrics, .navigation-status__total { display: flex; align-items: center; }
+  .navigation-status__heading, .navigation-status__metrics { justify-content: space-between; gap: 8px; }
+  .navigation-status__identity { gap: 6px; color: #7183a1; font-size: 10px; letter-spacing: .5px; }
+  .navigation-status__health { gap: 5px; color: #538477; font-size: 10px; white-space: nowrap; }
+  .navigation-status__pulse { width: 5px; height: 5px; border-radius: 50%; background: #55ad94; box-shadow: 0 0 0 3px rgb(85 173 148 / 9%); animation: status-breathe 3s ease-in-out infinite; }
+  .navigation-status__metrics { margin-top: 7px; align-items: baseline; }
+  .navigation-status__total { gap: 7px; align-items: baseline; color: #8490a4; font-size: 11px; }
+  .navigation-status__total strong { color: #48638c; font-size: 25px; line-height: 1.25; font-weight: 600; letter-spacing: -.8px; font-variant-numeric: tabular-nums; }
+  .navigation-status__categories { color: #8490a4; font-size: 10px; white-space: nowrap; }
+  .navigation-status__categories strong { color: #617b9e; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .navigation-status__signal { height: 2px; margin-top: 10px; overflow: hidden; border-radius: 2px; background: linear-gradient(90deg, rgb(106 145 212 / 20%), rgb(103 176 166 / 15%), transparent); }
+  .navigation-status__signal span { display: block; width: 32%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, transparent, rgb(108 153 216 / 55%), transparent); }
+  :global(.dark) .navigation-status { border-color: rgb(148 170 203 / 13%); }
+  :global(.dark) .navigation-status__identity, :global(.dark) .navigation-status__total, :global(.dark) .navigation-status__categories { color: #94a4bd; }
+  :global(.dark) .navigation-status__total strong { color: #b2c9ed; }
+  :global(.dark) .navigation-status__categories strong { color: #a2b9d9; }
+  :global(.dark) .navigation-status__health { color: #82bca9; }
+  @keyframes status-breathe { 50% { box-shadow: 0 0 0 5px rgb(85 173 148 / 3%); opacity: .65; } }
+  @media (prefers-reduced-motion: reduce) { .navigation-status__pulse { animation: none; } }
+  [data-menu-pending] { visibility: hidden; }
+  .menu-list-region { position: relative; min-height: 0; flex: 1; }
+  .menu-list-loading { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .75rem; background: #f6f8fc; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .menu-list-loading[hidden] { display: none !important; }
+  .menu-list-spinner { width: 1.5rem; height: 1.5rem; border: 2px solid #c7d2fe; border-top-color: #6366f1; border-radius: 50%; animation: menu-list-spin .7s linear infinite; }
+  :global(.dark) .menu-list-loading { background: rgb(16 24 39 / 72%); }
+  @keyframes menu-list-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .menu-list-spinner { animation: none; } }
+  .sidebar-brand { display: block; width: 142px; line-height: 1; }
+  .sidebar-brand__wordmark { display: block; width: 142px; height: 30px; }
+  .sidebar-brand__wordmark text {
+    font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif;
+    font-size: 23px;
+    font-weight: 400;
+  }
+  .sidebar-brand__ink-start { stop-color: #293d60; }
+  .sidebar-brand__ink-end { stop-color: #6589ce; }
+  .sidebar-brand__slogan { display: block; margin-top: 3px; padding-left: 2px; color: #8795ac; font-size: 10px; font-weight: 400; line-height: 1.5; letter-spacing: .5px; white-space: nowrap; }
+  :global(.dark) .sidebar-brand__ink-start { stop-color: #e0e9fa; }
+  :global(.dark) .sidebar-brand__ink-end { stop-color: #96b5ee; }
+  :global(.dark) .sidebar-brand__slogan { color: #95a5be; }
+  .menu-order-item { position: relative; }
+  .menu-order-link { padding-right: 2.5rem; }
+  .menu-order-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    opacity: 0.4;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .menu-order-handle:hover, .menu-order-handle:focus-visible { opacity: 1; background: rgb(99 102 241 / 0.1); }
+  .menu-order-item.is-dragging { background: rgb(99 102 241 / 0.12); outline: 2px solid #818cf8; border-radius: 10px; }
+  [data-menu-order].is-sorting { user-select: none; cursor: grabbing; }
+  .is-sorting .menu-order-handle { cursor: grabbing; }
+  .menu-order-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .menu-order-status[data-error] { position: static; width: auto; height: auto; clip-path: none; margin: 8px 12px; font-size: 12px; color: #e11d48; }
+</style>

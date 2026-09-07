@@ -1,29 +1,25 @@
 ---
-/**
- * 站内搜索结果页。所有站点在构建期渲染进 HTML（利于收录），
- * 客户端只根据关键词切换显隐，无需请求接口。
- */
+/** 仅构建卡片及有效品牌 SVG 模板，完整搜索数据由本站运行时索引按需加载。 */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE } from '../../config/site';
-import { categories, siteCount } from '../../lib/data';
-import { websiteNode, breadcrumb } from '../../lib/seo';
+import { getNavigation } from '../../lib/data';
+import { isBrandIcon } from '../../lib/brand-icon.ts';
+import { createWebsiteNode, breadcrumb } from '../../lib/seo';
 import { Icon } from 'astro-icon/components';
 import Card from '../../components/ui/Card.astro';
-import Chip from '../../components/ui/Chip.astro';
 import BrandIcon from '../../components/ui/BrandIcon.astro';
-import { HOT_SEARCHES } from '../../config/site';
+import FavoriteButton from '../../components/ui/FavoriteButton.astro';
+import Empty from '../../components/ui/Empty.astro';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+const { siteCount, categories } = await getNavigation();
+const brandIcons = [...new Set(categories.flatMap((category) => category.sites.map((site) => site.icon)).filter(isBrandIcon))];
 
 const canonical = `${SITE.url}/search/`;
 const title = `站内搜索 | ${SITE.name}`;
-const description = `在 ${SITE.name} 收录的 ${siteCount} 个优质网站中搜索，按名称、描述或分类快速定位。`;
-
-/** 展平为可搜索列表，携带分类信息用于展示与匹配。 */
-const entries = categories.flatMap((cat) =>
-  cat.sites.map((site) => ({ site, catName: cat.name, catSlug: cat.slug }))
-);
-
+const description = `在 ${SITE.name} 收录的 ${siteCount} 个优质网站中搜索，按名称、别名、描述、域名、分类或标签快速定位。`;
 const ld = [
-  websiteNode,
+  createWebsiteNode(SITE),
   breadcrumb([
     { name: '首页', url: `${SITE.url}/` },
     { name: '站内搜索', url: canonical },
@@ -31,91 +27,84 @@ const ld = [
 ];
 ---
 <BaseLayout title={title} description={description} canonical={canonical} robots="noindex,follow" ld={ld}>
-  <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">站内搜索</h1>
-  <p class="mt-1.5 text-[13px] text-ink-400 dark:text-white/55">{description}</p>
+  <section data-search-root>
+    <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">站内搜索</h1>
 
-  <form
-    class="mt-5 flex h-12 max-w-xl items-center gap-2.5 rounded-full border border-hairline bg-surface pr-1.5 pl-4 focus-within:ring-2 focus-within:ring-brand-500/35 dark:border-white/10 dark:bg-white/5"
-    action="/search/"
-    method="get"
-    role="search"
-  >
-    <label for="q" class="sr-only">搜索关键词</label>
-    <Icon name="lucide:search" style="width:18px;height:18px" class="shrink-0 text-ink-300" />
-    <input
-      id="q"
-      name="q"
-      type="search"
-      placeholder="输入网站名称、关键词或分类..."
-      autocomplete="off"
-      class="h-full min-w-0 flex-1 bg-transparent text-sm text-ink-900 outline-none placeholder:text-ink-300 dark:text-white"
-      data-search-input
-    />
-    <button type="submit" class="h-9 shrink-0 rounded-full bg-brand-500 px-5 text-sm font-medium text-white transition hover:bg-brand-600">
-      搜索
-    </button>
-  </form>
+    <form
+      class="mt-5 flex h-12 max-w-xl items-center gap-2.5 rounded-full border border-hairline bg-surface pr-1.5 pl-4 focus-within:ring-2 focus-within:ring-brand-500/35 dark:border-white/10 dark:bg-white/5"
+      action="/search/"
+      method="get"
+      role="search"
+      data-search-form
+    >
+      <label for="q" class="sr-only">搜索关键词</label>
+      <Icon name="lucide:search" style="width:18px;height:18px" class="shrink-0 text-ink-300" />
+      <input
+        id="q"
+        name="q"
+        type="search"
+        placeholder="输入网站名称、关键词或分类..."
+        autocomplete="off"
+        class="h-full min-w-0 flex-1 bg-transparent text-sm text-ink-900 outline-none placeholder:text-ink-300 dark:text-white"
+        data-search-input
+      />
+      <button type="submit" class="h-9 shrink-0 rounded-full bg-brand-500 px-5 text-sm font-medium text-white transition hover:bg-brand-600">
+        搜索
+      </button>
+    </form>
 
-  <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-    <span class="text-ink-400 dark:text-white/50">热门搜索：</span>
-    {HOT_SEARCHES.map((word) => <Chip href={`/search/?q=${encodeURIComponent(word)}`}>{word}</Chip>)}
-  </div>
+    <p class="mt-6 text-[13px] text-ink-400 dark:text-white/55" data-search-summary role="status" aria-live="polite" aria-atomic="true">
+      正在加载搜索索引…
+    </p>
+    <ul class="nav-card-grid mt-4" data-search-list aria-busy="true"></ul>
 
-  <p class="mt-6 text-[13px] text-ink-400 dark:text-white/55" data-search-summary aria-live="polite">
-    共 {entries.length} 个站点
-  </p>
+    {/* 只为本地有效 Iconify 名称建模板；内联 glyph 避免克隆后引用模板内的 symbol。 */}
+    {brandIcons.map((icon) => (
+      <template data-search-brand-icon={icon}>
+        <Icon name={icon} is:inline style="width:18px;height:18px" />
+      </template>
+    ))}
 
-  <ul class="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3" data-search-list>
-    {entries.map(({ site, catName, catSlug }) => (
-      <li
-        data-search-item
-        data-haystack={`${site.name} ${site.desc} ${catName} ${site.slug}`.toLowerCase()}
-      >
-        <Card class="flex gap-3.5 p-4">
-          <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={42} />
-          <div class="min-w-0 flex-1">
+    <template data-search-template>
+      <li data-search-item>
+        <Card siteId="" class="nav-card nav-card--search nav-card--with-external nav-card--with-favorite group">
+          <BrandIcon icon={null} mono="?" color="#3777f5" size={32} class="search-result-icon nav-card-icon" />
+          <div class="nav-card-copy">
             <h2 class="truncate text-sm font-medium text-ink-900 dark:text-white">
-              <a href={`/${catSlug}/${site.slug}/`} class="transition-colors hover:text-brand-500">{site.name}</a>
+              <a data-result-name target="_blank" rel="noopener noreferrer" class="nav-card-detail block truncate transition-colors group-hover:text-brand-500"></a>
             </h2>
-            <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-300 dark:text-white/45">{site.desc}</p>
-            <a href={`/${catSlug}/`} class="mt-2 inline-block text-[11px] text-brand-500 hover:opacity-70">{catName}</a>
+            <p data-result-desc class="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-300 dark:text-white/45"></p>
+            <a data-result-category class="nav-card-category"></a>
           </div>
+          <FavoriteButton siteId="" name="站点" />
+          <a data-result-external target="_blank" rel="noopener noreferrer" class="nav-card-external text-ink-300 hover:text-brand-500" aria-label="直达官网（新窗口打开）"><Icon name="lucide:circle-chevron-right" style="width:16px;height:16px" /></a>
         </Card>
       </li>
-    ))}
-  </ul>
+    </template>
 
-  <p class="mt-8 hidden text-center text-[13px] text-ink-400 dark:text-white/55" data-search-empty>
-    没有匹配的站点，试试其它关键词，或
-    <a href="/categories/" class="text-brand-500 hover:opacity-70">浏览全部分类</a>。
-  </p>
-
+    <Empty
+      class="hidden"
+      data-search-empty
+      icon="lucide:search"
+      title="没有找到相关站点"
+      description="换个关键词试试，或浏览全部分类，发现更多实用站点。"
+      actionLabel="浏览全部分类"
+      actionHref="/categories/"
+    />
+    <div class="mt-8 hidden text-center text-[13px] text-ink-400 dark:text-white/55" data-search-error role="alert">
+      搜索索引加载失败，请检查网络后
+      <button type="button" data-search-retry class="text-brand-500 hover:opacity-70">重新加载</button>。
+    </div>
+    <nav class="mt-6 hidden flex flex-wrap items-center justify-center gap-4 text-sm" data-search-pagination aria-label="搜索结果分页">
+      <button type="button" data-search-prev class="rounded-full border border-hairline px-4 py-2 text-brand-500 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10">上一页</button>
+      <span data-search-page class="text-ink-400 dark:text-white/55"></span>
+      <button type="button" data-search-next class="rounded-full border border-hairline px-4 py-2 text-brand-500 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10">下一页</button>
+    </nav>
+    <noscript>
+      <p class="mt-6 text-sm text-ink-400">请启用 JavaScript 使用站内搜索，或<a href="/categories/" class="text-brand-500">浏览全部分类</a>。</p>
+    </noscript>
+  </section>
   <script>
-    const input = document.querySelector<HTMLInputElement>('[data-search-input]');
-    const items = Array.from(document.querySelectorAll<HTMLElement>('[data-search-item]'));
-    const summary = document.querySelector<HTMLElement>('[data-search-summary]');
-    const empty = document.querySelector<HTMLElement>('[data-search-empty]');
-
-    function run(raw: string) {
-      const q = raw.trim().toLowerCase();
-      let hits = 0;
-      for (const item of items) {
-        const match = !q || (item.dataset.haystack ?? '').includes(q);
-        item.hidden = !match;
-        if (match) hits++;
-      }
-      if (summary) {
-        summary.textContent = q ? `“${raw.trim()}” 匹配到 ${hits} 个站点` : `共 ${items.length} 个站点`;
-      }
-      empty?.classList.toggle('hidden', hits > 0);
-    }
-
-    // 支持从 Hero 搜索框跳转过来时带上 ?q=
-    const initial = new URLSearchParams(location.search).get('q') ?? '';
-    if (input) {
-      input.value = initial;
-      input.addEventListener('input', () => run(input.value));
-    }
-    run(initial);
+    import '../../scripts/search';
   </script>
 </BaseLayout>

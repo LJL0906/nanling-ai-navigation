@@ -1,0 +1,26 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import '../../styles/admin-content.css';
+---
+<AdminLayout title="系统公告" active="announcements">
+  <section data-announcements-admin>
+    <p data-announcement-message class="admin-alert" role="status" aria-live="polite" hidden></p>
+    <section class="admin-panel">
+      <div class="admin-toolbar"><div class="admin-toolbar-actions"><button class="admin-primary" data-announcement-add type="button">新增公告</button></div><button data-announcement-refresh type="button">刷新</button></div>
+      <div class="admin-table-wrap"><table class="admin-table" aria-label="公告列表"><thead><tr><th class="admin-col-index" scope="col">序号</th><th scope="col">公告标题</th><th scope="col">内容摘要</th><th class="admin-col-time" scope="col">发布时间</th><th class="admin-col-actions" scope="col">操作</th></tr></thead><tbody data-announcement-list aria-busy="true"></tbody></table></div>
+      <nav class="admin-pagination" aria-label="公告分页"><span data-announcement-page></span><div class="admin-pagination-actions"><label>每页条数<select data-announcement-size aria-label="公告每页条数"><option value="10">10</option></select></label><button type="button" data-announcement-prev disabled>上一页</button><button type="button" data-announcement-next disabled>下一页</button></div></nav>
+    </section>
+    <dialog class="content-dialog" data-announcement-dialog aria-labelledby="announcement-editor-title">
+      <form data-announcement-form>
+        <header class="content-dialog-header"><h2 id="announcement-editor-title" data-announcement-editor-title>新增公告</h2><button type="button" class="content-dialog-close" data-announcement-close aria-label="关闭公告弹窗">×</button></header>
+        <div class="content-dialog-body">
+          <fieldset class="content-fields"><label class="content-wide">公告标题<input name="title" required maxlength="200" /></label><label class="content-wide">公告正文<textarea name="body" required maxlength="5000" rows="8"></textarea></label></fieldset>
+          <a data-announcement-login href="/admin/login/" target="_blank" rel="noopener" hidden>在新标签页登录后台</a>
+          <p data-announcement-form-message class="admin-alert" role="alert" hidden></p>
+        </div>
+        <footer class="content-dialog-footer"><button type="button" data-announcement-cancel>取消</button><button type="submit" class="admin-primary" data-announcement-save>发布公告</button></footer>
+      </form>
+    </dialog>
+  </section>
+  <script>import '../../scripts/admin-announcements';</script>
+</AdminLayout>

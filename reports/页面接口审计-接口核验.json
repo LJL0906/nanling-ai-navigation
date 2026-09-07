@@ -1,0 +1,360 @@
+{
+  "checkedAt": "2026-09-07T14:36:16.464Z",
+  "mode": "GET only; admin bearer if configured; no user session",
+  "results": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "dataKeys": [
+        "status",
+        "storage",
+        "databaseConnected"
+      ],
+      "health": {
+        "status": "ok",
+        "storage": "mysql",
+        "databaseConnected": true
+      }
+    },
+    {
+      "path": "/api/categories",
+      "status": 200,
+      "dataKeys": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17"
+      ],
+      "count": 18
+    },
+    {
+      "path": "/api/sites?pageSize=1",
+      "status": 200,
+      "dataKeys": [
+        "0"
+      ],
+      "count": 1,
+      "pagination": {
+        "page": 1,
+        "pageSize": 1,
+        "total": 2400,
+        "totalPages": 2400
+      }
+    },
+    {
+      "path": "/api/menus",
+      "status": 200,
+      "count": 52,
+      "keyCount": 52
+    },
+    {
+      "path": "/api/notifications",
+      "status": 200,
+      "dataKeys": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "user"
+      ]
+    },
+    {
+      "path": "/api/account/session",
+      "status": 200,
+      "dataKeys": [
+        "user"
+      ]
+    },
+    {
+      "path": "/api/personal",
+      "status": 401,
+      "code": "USER_UNAUTHORIZED",
+      "dataKeys": [
+        "error"
+      ]
+    },
+    {
+      "path": "/api/admin/status",
+      "status": 200,
+      "dataKeys": [
+        "storage",
+        "counts"
+      ]
+    },
+    {
+      "path": "/api/admin/content?kind=categories",
+      "status": 503,
+      "code": "CONTENT_UNAVAILABLE",
+      "dataKeys": [
+        "error"
+      ]
+    },
+    {
+      "path": "/api/admin/content?kind=sites",
+      "status": 503,
+      "code": "CONTENT_UNAVAILABLE",
+      "dataKeys": [
+        "error"
+      ]
+    },
+    {
+      "path": "/api/admin/menus",
+      "status": 200,
+      "dataKeys": [
+        "menus",
+        "revision",
+        "writable"
+      ]
+    },
+    {
+      "path": "/api/admin/submissions",
+      "status": 200,
+      "dataKeys": [
+        "items",
+        "total",
+        "page",
+        "pageSize",
+        "totalPages",
+        "status"
+      ]
+    },
+    {
+      "path": "/api/admin/announcements",
+      "status": 200,
+      "dataKeys": [
+        "items",
+        "total",
+        "page",
+        "pageSize"
+      ]
+    },
+    {
+      "path": "/search-index.json",
+      "status": 200,
+      "dataKeys": [
+        "version",
+        "categories",
+        "sites"
+      ]
+    },
+    {
+      "path": "/personal-sites.json",
+      "status": 200,
+      "keyCount": 2400
+    },
+    {
+      "path": "/history-destinations.json",
+      "status": 200,
+      "keyCount": 8635
+    }
+  ],
+  "contentRechecks": {
+    "at": "2026-09-07T14:41:20Z/2026-09-07T14:41:24Z",
+    "rounds": 3,
+    "categories": {
+      "status": 200,
+      "count": 18
+    },
+    "sites": {
+      "status": 200,
+      "count": 2400
+    },
+    "note": "Direct createContentStore.list also succeeded. Initial 503 not reproduced; root cause unconfirmed."
+  },
+  "menuLinks": [
+    {
+      "id": "sidebar:/",
+      "href": "/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "sidebar:/ai/",
+      "href": "/#ai",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/search-engines/",
+      "href": "/#search-engines",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/dev/",
+      "href": "/#dev",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/design/",
+      "href": "/#design",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/learn/",
+      "href": "/#learn",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/community/",
+      "href": "/#community",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/office/",
+      "href": "/#office",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/life/",
+      "href": "/#life",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/shopping/",
+      "href": "/#shopping",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/jobs/",
+      "href": "/#jobs",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/finance/",
+      "href": "/#finance",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/download/",
+      "href": "/#download",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/media/",
+      "href": "/#media",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/games/",
+      "href": "/#games",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/webmaster/",
+      "href": "/#webmaster",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/fun/",
+      "href": "/#fun",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/tools/",
+      "href": "/#tools",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/other/",
+      "href": "/#other",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "sidebar:/categories/",
+      "href": "/categories/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "sidebar-footer:settings",
+      "href": "/settings/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar:home",
+      "href": "/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar:favorites",
+      "href": "/favorites/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar:group:ai-work:all",
+      "href": "/discover/#ai-work",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "topbar:group:creative:all",
+      "href": "/discover/#creative",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "topbar:group:dev-learn:all",
+      "href": "/discover/#dev-learn",
+      "status": 200,
+      "anchorFound": true
+    },
+    {
+      "id": "topbar-actions:notifications",
+      "href": "/notifications/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar-actions:user:favorites",
+      "href": "/favorites/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar-actions:user:history",
+      "href": "/history/",
+      "status": 200,
+      "anchorFound": null
+    },
+    {
+      "id": "topbar-actions:user:settings",
+      "href": "/settings/",
+      "status": 200,
+      "anchorFound": null
+    }
+  ]
+}

@@ -1,26 +1,39 @@
 ---
-/** 站点图标方块：有 Iconify 图标时按品牌色着色，否则回退为首字方块。 */
+/** 品牌 SVG 优先，本地图像成功加载后替换首字，其余输入安全回退。 */
 import { Icon } from 'astro-icon/components';
+import { isBrandIcon } from '../../lib/brand-icon.ts';
+import { isLocalSiteIcon } from '../../lib/site-icon.ts';
 
 interface Props {
   icon?: string | null;
+  inline?: boolean;
   mono?: string;
   color?: string;
   size?: number;
   class?: string;
 }
 
-const { icon = null, mono = '', color = '#3777f5', size = 40, class: cls = '' } = Astro.props;
+const { icon = null, inline = false, mono = '', color = '#3777f5', size = 40, class: cls = '' } = Astro.props;
 const glyph = Math.round(size * 0.55);
+const safeColor = /^#[\da-f]{6}$/i.test(color) ? color : '#3777f5';
 ---
 <span
-  class:list={['inline-flex shrink-0 items-center justify-center rounded-[10px]', cls]}
-  style={`width:${size}px;height:${size}px;background:${color}1f`}
+  class:list={['relative inline-flex shrink-0 items-center justify-center rounded-[10px]', cls]}
+  style={`width:${size}px;height:${size}px;background:${safeColor}1f`}
   aria-hidden="true"
 >
-  {icon ? (
-    <Icon name={icon} style={`color:${color};width:${glyph}px;height:${glyph}px`} />
+  {isBrandIcon(icon) ? (
+    <Icon name={icon} is:inline={inline} style={`color:${safeColor};width:${glyph}px;height:${glyph}px`} />
   ) : (
-    <span class="font-bold leading-none" style={`color:${color};font-size:${Math.round(size * 0.36)}px`}>{mono}</span>
+    <>
+      <span data-site-icon-fallback class="font-bold leading-none" style={`color:${safeColor};font-size:${Math.round(size * 0.36)}px`}>{mono || '?'}</span>
+      {isLocalSiteIcon(icon) && <img data-site-icon-image src={icon} alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"
+        width={size} height={size} style="position:absolute;width:72%;height:72%;object-fit:contain;opacity:0" />}
+    </>
   )}
 </span>
+<script>
+  import { initSiteImages } from '../../scripts/site-icons';
+  document.addEventListener('astro:page-load', initSiteImages);
+  initSiteImages();
+</script>

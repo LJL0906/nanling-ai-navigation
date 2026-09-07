@@ -1,0 +1,24 @@
+---
+import { Icon } from 'astro-icon/components';
+import '../../styles/notifications.css';
+---
+<dialog id="notification-drawer" class="notification-drawer" data-notifications aria-label="通知">
+  <header class="notification-toolbar">
+    <nav class="notification-tabs" aria-label="消息分类">
+      <button type="button" data-notification-kind="site" aria-pressed="true">站点变动</button>
+      <button type="button" data-notification-kind="submission" aria-pressed="false">我的提交</button>
+      <button type="button" data-notification-kind="announcement" aria-pressed="false">系统公告</button>
+    </nav>
+    <div class="notification-tools">
+      <button type="button" data-notification-refresh aria-label="刷新消息" title="刷新"><Icon name="lucide:refresh-cw" width={16} height={16} /></button>
+      <button type="button" data-notification-close aria-label="关闭通知" title="关闭" autofocus><Icon name="lucide:x" width={19} height={19} /></button>
+    </div>
+  </header>
+  <div class="notification-scroll">
+    <p data-notification-message class="notification-message" role="status" aria-live="polite"></p>
+    <div class="notification-login" data-notification-login hidden><a href="/login/" data-notification-login-action>登录查看</a></div>
+    <ul class="notification-list" data-notification-list aria-label="通知列表" aria-busy="false"></ul>
+  </div>
+  <footer class="notification-pagination" data-notification-pagination hidden><span data-notification-page></span><div><button type="button" data-notification-prev disabled aria-label="上一页"><Icon name="lucide:chevron-left" width={16} height={16} /></button><button type="button" data-notification-next disabled aria-label="下一页"><Icon name="lucide:chevron-right" width={16} height={16} /></button></div></footer>
+</dialog>
+<script>import '../../scripts/notifications';</script>

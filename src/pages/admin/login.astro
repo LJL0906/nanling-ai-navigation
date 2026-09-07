@@ -1,0 +1,15 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { Icon } from 'astro-icon/components';
+---
+<AdminLayout title="管理员登录" guest>
+  <a class="admin-login-brand" href="/"><span class="admin-brand-mark">N</span>楠灵管理系统</a>
+  <div class="admin-login-frame">
+    <section class="admin-login-intro" aria-label="系统介绍"><p class="admin-page-kicker">NANLING ADMINISTRATION</p><h1>内容有序管理<br />工作高效协同</h1><p>独立的导航管理工作空间。<br />从菜单维护到内容审批，让每一次发布清晰可追溯。</p><div class="admin-login-preview"><div><Icon name="lucide:list-tree" />统一维护导航菜单与展示顺序</div><div><Icon name="lucide:clipboard-check" />在线审核提交，通过后直接发布</div><div><Icon name="lucide:table-2" />集中查询站点，留存审核记录</div></div></section>
+    <section class="admin-login-form-area"><div class="admin-login-card"><h2>管理员登录</h2><p>欢迎使用楠灵AI导航后台管理系统</p>
+      <form id="admin-login-form"><label for="username">管理员账号<input id="username" name="username" autocomplete="username" required maxlength="128" placeholder="请输入管理员账号" /></label><label for="password">登录密码<input id="password" name="password" type="password" autocomplete="current-password" required maxlength="512" placeholder="请输入登录密码" /></label><button type="submit" class="admin-primary">登录管理后台</button><p id="login-message" role="status" aria-live="polite" class="admin-login-message">仅限授权管理员使用。管理员账号仅由部署配置内置，不开放注册；普通用户注册不会获得管理权限。</p></form>
+      <noscript><p>请启用 JavaScript 后登录管理系统。</p></noscript><a class="admin-login-back" href="/">← 返回前台网站</a>
+    </div></section>
+  </div><footer class="admin-login-footer">楠灵AI导航 · 安全访问，规范管理</footer>
+</AdminLayout>
+<script>import '../../scripts/admin-login';</script>

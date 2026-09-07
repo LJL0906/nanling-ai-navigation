@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteCard from '../home/SiteCard.astro';
+import Empty from '../ui/Empty.astro';
+
+import '../../styles/personal.css';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+interface Props { kind: 'favorites' | 'history'; }
+const { kind } = Astro.props;
+const title = kind === 'favorites' ? '我的收藏' : '最近访问';
+const description = kind === 'favorites'
+  ? '收藏常用站点，点击星星即可添加或取消。登录后收藏保存在账号数据库中，支持跨设备同步。'
+  : '记录浏览过的站点详情和点击打开的官网，按最近访问排序，最多保留 100 个站点。登录后记录保存在账号数据库中，支持跨设备同步；未登录不记录访问。';
+const templateSite = { id: '', name: '站点', slug: '', url: '/', desc: '', icon: null, mono: '?', color: '#3777f5', categorySlug: '' };
+---
+<BaseLayout title={`${title} | ${SITE.name}`} description={description} canonical={`${SITE.url}/${kind}/`} robots="noindex,follow">
+  <section data-personal-page={kind}>
+    <h1 class="text-xl font-bold text-ink-900 dark:text-white">{title}</h1>
+    <p data-personal-login hidden class="mt-4 text-sm">请先登录后查看个人列表。<button type="button" class="personal-action">登录 / 注册</button></p>
+    <div class="personal-toolbar">
+      <label class="sr-only" for="personal-filter">筛选{title}</label>
+      <input id="personal-filter" type="search" class="personal-filter" placeholder="搜索名称、描述或分类…" data-personal-filter />
+      <button type="button" class="personal-action" data-personal-clear disabled>清空{title}</button>
+    </div>
+    <p class="mb-4 text-xs text-ink-400" data-personal-status role="status" aria-live="polite">正在加载…</p>
+    <ul class="nav-card-grid" data-personal-list></ul>
+    <Empty
+      data-personal-empty hidden
+      icon={kind === 'favorites' ? 'lucide:star' : 'lucide:history'}
+      title={kind === 'favorites' ? '还没有收藏的站点' : '暂无访问记录'}
+      description={kind === 'favorites' ? '遇到喜欢的站点，点击旁边的小星星，让常用好站在这里汇聚。' : '浏览站点详情或打开官网后，足迹会保存在这里，方便下次继续探索。'}
+      actionLabel="去浏览站点" actionHref="/"
+    />
+    <Empty
+      data-personal-no-results hidden
+      icon="lucide:search" title="没有找到匹配的记录"
+      description="试试其他关键词，或清除筛选，查看全部记录。"
+    >
+      <button slot="actions" type="button" class="personal-action" data-personal-reset>清除筛选</button>
+    </Empty>
+    <div data-personal-error hidden class="mt-6 text-sm text-ink-400" role="alert">
+      <span data-personal-error-message>无法加载列表，请检查网络后重试。</span>
+      <button type="button" class="personal-action" data-personal-retry>重试</button>
+    </div>
+    <button type="button" class="personal-action mt-5" data-personal-more hidden>加载更多</button>
+    <template data-personal-card>
+      <li>
+        <SiteCard site={templateSite} />
+        <div class="personal-meta"><time data-personal-time></time><button type="button" class="personal-remove" data-personal-remove>移除</button></div>
+      </li>
+    </template>
+    <noscript><p class="mt-6 text-sm">请启用 JavaScript 查看和管理账号收藏与访问历史。</p></noscript>
+  </section>
+  <script>import '../../scripts/personal-page';</script>
+</BaseLayout>
+
+

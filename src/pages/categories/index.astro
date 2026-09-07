@@ -1,16 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { SITE } from '../../config/site';
-import { categories, siteCount } from '../../lib/data';
-import { websiteNode, breadcrumb, itemList } from '../../lib/seo';
+import { getNavigation } from '../../lib/data';
+import { createWebsiteNode, breadcrumb, itemList } from '../../lib/seo';
 import Card from '../../components/ui/Card.astro';
 import BrandIcon from '../../components/ui/BrandIcon.astro';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+const { categories, siteCount } = await getNavigation();
 
 const canonical = `${SITE.url}/categories/`;
 const title = `全部分类_网站导航 | ${SITE.name}`;
 const description = `${SITE.name}全部 ${categories.length} 个分类，共收录 ${siteCount} 个优质网站，按需查找一目了然。`;
 const ld = [
-  websiteNode,
+  createWebsiteNode(SITE),
   breadcrumb([
     { name: '首页', url: `${SITE.url}/` },
     { name: '全部分类', url: canonical },
@@ -23,7 +26,6 @@ const ld = [
 ---
 <BaseLayout title={title} description={description} canonical={canonical} ld={ld}>
   <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">全部分类</h1>
-  <p class="mt-1.5 text-[13px] text-ink-400 dark:text-white/55">{description}</p>
 
   <ul class="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
     {categories.map((cat) => (

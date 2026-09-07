@@ -1,0 +1,173 @@
+{
+  "measuredAt": "2026-09-07T14:10:33.195Z",
+  "environment": "本机Node生产构建，回环网络；非公网测速",
+  "driver": "mysql",
+  "initialCards": 299,
+  "cold": {
+    "status": 200,
+    "firstByteMs": 1149.53,
+    "totalMs": 1155.4,
+    "bytes": 1789131,
+    "etag": null,
+    "cacheControl": null
+  },
+  "warmMedianMs": 124.24,
+  "warm": [
+    {
+      "status": 200,
+      "firstByteMs": 119.87,
+      "totalMs": 124.24,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 121.07,
+      "totalMs": 125.06,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 112.26,
+      "totalMs": 115.63,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 122.64,
+      "totalMs": 127.15,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 114.44,
+      "totalMs": 117.99,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    }
+  ],
+  "concurrent": [
+    {
+      "status": 200,
+      "firstByteMs": 257.06,
+      "totalMs": 260.43,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 261.28,
+      "totalMs": 264.92,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 265.85,
+      "totalMs": 269.18,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 270.02,
+      "totalMs": 273.22,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    },
+    {
+      "status": 200,
+      "firstByteMs": 274.04,
+      "totalMs": 277.58,
+      "bytes": 1789131,
+      "etag": null,
+      "cacheControl": null
+    }
+  ],
+  "pages": {
+    "/favorites/": {
+      "status": 200,
+      "firstByteMs": 72.14,
+      "totalMs": 72.46,
+      "bytes": 85593,
+      "etag": null,
+      "cacheControl": null
+    },
+    "/admin/login/": {
+      "status": 200,
+      "firstByteMs": 10.94,
+      "totalMs": 11.04,
+      "bytes": 6307,
+      "etag": null,
+      "cacheControl": "no-store"
+    }
+  },
+  "indices": {
+    "/search-index.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 20.09,
+        "totalMs": 21.71,
+        "bytes": 782572,
+        "etag": "\"43ddb0a6f5b3af24e973af6a246f49118d7ef00531277d499e316b4a7c366bc5\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 6.37,
+        "totalMs": 6.38,
+        "bytes": 0,
+        "etag": "\"43ddb0a6f5b3af24e973af6a246f49118d7ef00531277d499e316b4a7c366bc5\"",
+        "cacheControl": "public, no-cache"
+      }
+    },
+    "/personal-sites.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 19.84,
+        "totalMs": 34.33,
+        "bytes": 747792,
+        "etag": "\"e8d90f396e765a6243140558b622ec8f6b99e6b02f06e43c2b7d10d84d75061b\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 10.45,
+        "totalMs": 10.46,
+        "bytes": 0,
+        "etag": "\"e8d90f396e765a6243140558b622ec8f6b99e6b02f06e43c2b7d10d84d75061b\"",
+        "cacheControl": "public, no-cache"
+      }
+    },
+    "/history-destinations.json": {
+      "initial": {
+        "status": 200,
+        "firstByteMs": 23.03,
+        "totalMs": 23.8,
+        "bytes": 412063,
+        "etag": "\"bdb291db1f97440df83400643281ea3d305d1f28e66c62ff717ade833ead62d7\"",
+        "cacheControl": "public, no-cache"
+      },
+      "validated": {
+        "status": 304,
+        "firstByteMs": 6.56,
+        "totalMs": 6.57,
+        "bytes": 0,
+        "etag": "\"bdb291db1f97440df83400643281ea3d305d1f28e66c62ff717ade833ead62d7\"",
+        "cacheControl": "public, no-cache"
+      }
+    }
+  }
+}

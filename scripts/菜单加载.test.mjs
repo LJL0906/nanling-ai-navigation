@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFileSync,existsSync} from 'node:fs';
+const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');
+test('列表初始化前隐藏默认顺序，遮罩限定菜单区域',()=>{const s=read('../src/components/layout/Sidebar.astro');assert.ok(s.includes('data-menu-order data-menu-pending'));assert.ok(s.includes('[data-menu-pending] { visibility: hidden; }'));assert.ok(s.includes('menu-list-region relative min-h-0 flex-1'));assert.ok(s.includes('position: absolute; inset: 0'));assert.ok(s.includes('data-menu-list-loading'));assert.ok(s.includes('<noscript>'));});
+test('恢复排序后才显示列表及撤掉遮罩',()=>{const s=read('../src/scripts/sidebarOrder.ts');const sort=s.indexOf('apply(readMenuOrder(storage, defaults));');const show=s.indexOf("list.toggleAttribute('data-menu-pending', false)");const hide=s.indexOf('if (loading) loading.hidden = true');assert.ok(sort>=0&&show>sort&&hide>show);});
+test('移除页面跳转提示及loader包装，不影响导航',()=>{assert.ok(!read('../src/layouts/BaseLayout.astro').includes('MenuLoading'));assert.equal(existsSync(new URL('../src/scripts/menu-loading.ts',import.meta.url)),false);});
+
+test('遮罩使用指定背景色，只有图标而无占位文本',()=>{const s=read('../src/components/layout/Sidebar.astro');assert.ok(s.includes('background: #f6f8fc'));assert.ok(s.includes('backdrop-filter: blur(8px)'));assert.ok(s.includes('aria-label="菜单加载中"'));assert.ok(!s.includes('<span>菜单加载中…</span>'));assert.ok(s.includes('.menu-list-loading[hidden] { display: none !important; }'));});

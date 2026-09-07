@@ -1,0 +1,44 @@
+---
+import AccountDialog from './AccountDialog.astro';
+---
+<div data-account-status class="account-status">
+  <span data-account-anonymous class="account-status__entry">
+    <button type="button" data-account-open="login" class="account-status__button">登录</button>
+    <button type="button" data-account-open="register" class="account-status__button account-status__button--primary">注册</button>
+  </span>
+  <span data-account-member hidden class="account-status__member">
+    <span data-account-name class="account-status__name"></span>
+    <button type="button" data-account-logout class="account-status__button">退出</button>
+  </span>
+  <span data-account-status-message role="status" aria-live="polite" class="account-status__message"></span>
+</div>
+<AccountDialog />
+<script>import '../../scripts/account-status';</script>
+
+<style>
+  .account-status { position: relative; display: flex; flex: none; align-items: center; margin-inline: 2px 6px; font-size: 12px; }
+  .account-status__entry { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border: 1px solid rgb(98 140 245 / .18); border-radius: 999px; background: rgb(255 255 255 / .75); }
+  .account-status__button { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 44px; height: 28px; padding: 0 12px; border-radius: 999px; color: #556174; font-size: inherit; font-weight: 600; line-height: 1; white-space: nowrap; cursor: pointer; transition: background-color .18s ease, color .18s ease, box-shadow .18s ease; }
+  .account-status__button:hover { color: #356be0; background: rgb(55 119 245 / .08); }
+  .account-status__button--primary { color: #fff; background: #4f75ed; box-shadow: 0 2px 5px rgb(79 117 237 / .18); }
+  .account-status__button--primary:hover { color: #fff; background: #3d63db; box-shadow: 0 3px 8px rgb(79 117 237 / .25); }
+  .account-status__button:focus-visible { outline: 2px solid #719bf3; outline-offset: 3px; }
+  .account-status__button:disabled { opacity: .5; cursor: wait; }
+  .account-status__member { display: inline-flex; align-items: center; gap: 4px; }
+  .account-status__name { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #556174; }
+  .account-status__entry[hidden], .account-status__member[hidden] { display: none; }
+  .account-status__message { position: absolute; top: calc(100% + 10px); right: 0; width: max-content; max-width: min(240px, calc(100vw - 32px)); padding: 8px 12px; border: 1px solid rgb(100 116 139 / .14); border-radius: 10px; background: #fff; color: #667085; font-size: 12px; box-shadow: 0 6px 20px rgb(39 57 91 / .1); }
+  .account-status__message:empty { display: none; }
+  :global(.dark) .account-status__entry { background: rgb(255 255 255 / .05); border-color: rgb(144 174 255 / .2); }
+  :global(.dark) .account-status__button, :global(.dark) .account-status__name { color: #c0cadd; }
+  :global(.dark) .account-status__button:hover { color: #b3ceff; background: rgb(95 147 255 / .14); }
+  :global(.dark) .account-status__button--primary { color: #fff; background: #4f75ed; }
+  :global(.dark) .account-status__button--primary:hover { color: #fff; background: #3d63db; }
+  :global(.dark) .account-status__message { background: #162032; border-color: rgb(255 255 255 / .1); color: #c0cadd; }
+  @media (max-width: 639px) {
+    .account-status { margin-inline: 0 2px; }
+    .account-status__button { height: 30px; padding-inline: 9px; }
+    .account-status__name { max-width: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .account-status__button { transition: none; } }
+</style>

@@ -1,24 +1,16 @@
-import raw from '../data/sites.json';
+import { navigationRepository } from '../server/navigation';
 import type { Category, Site } from './types';
 
-export const categories = raw.categories as Category[];
+/** 仅供服务端页面和 API 使用；客户端使用 /api 或精简搜索索引。 */
+export const getNavigation = () => navigationRepository.getNavigation();
 
-/** 首页按顺序展示的分类。 */
-export const homeCategories = categories.filter((c) => c.home.show);
-
-export function getCategory(slug: string): Category | undefined {
-  return categories.find((c) => c.slug === slug);
+export async function getCategory(slug: string): Promise<Category | undefined> {
+  const { categories } = await getNavigation();
+  return categories.find((category) => category.slug === slug);
 }
 
-/** 站点总数，用于文案与结构化数据。 */
-export const siteCount = categories.reduce((n, c) => n + c.sites.length, 0);
+export function domainOf(site: Site): string { return site.domain; }
 
-/** 去掉协议前缀，用于展示域名。 */
-export function domainOf(site: Site): string {
-  return site.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-}
-
-/** 同分类下的其它站点，用于详情页推荐。 */
 export function relatedSites(category: Category, current: Site, limit = 6): Site[] {
-  return category.sites.filter((s) => s.slug !== current.slug).slice(0, limit);
+  return category.sites.filter((site) => site.id !== current.id).slice(0, limit);
 }

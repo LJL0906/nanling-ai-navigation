@@ -1,6 +1,26 @@
 ---
 /** 首页 Hero：主标题 + 搜索框 + 热门搜索标签。装饰图形用 CSS/SVG 近似设计稿的 3D 渲染。 */
 import { Icon } from 'astro-icon/components';
+import { getNavigation } from '../../lib/data';
+
+const { categories } = await getNavigation();
+
+// 历史标签直达官网；同名对应不同网址时不猜测目标。
+const destinations: Record<string, string | null> = Object.create(null);
+for (const category of categories) {
+  for (const site of category.sites) {
+    const href = site.url;
+    const aliases = 'aliases' in site && Array.isArray(site.aliases) ? site.aliases : [];
+    const keys = [site.name, site.slug, site.url, new URL(site.url).hostname, ...aliases];
+    for (const key of keys) {
+      if (typeof key !== 'string') continue;
+      const normalized = key.trim().toLowerCase().replace(/\/$/, '');
+      if (!normalized) continue;
+      if (!(normalized in destinations)) destinations[normalized] = href;
+      else if (destinations[normalized] !== href) destinations[normalized] = null;
+    }
+  }
+}
 ---
 <section class="cyber-hero relative isolate" aria-label="站内搜索">
   <form class="cyber-search" action="/search/" method="get" role="search" data-search-history-form>
@@ -24,6 +44,6 @@ import { Icon } from 'astro-icon/components';
       <Icon name="lucide:history" style="width:14px;height:14px" />
       <span>历史搜索</span>
     </span>
-    <div class="cyber-search-history__tags" data-search-history-tags></div>
+    <div class="cyber-search-history__tags" data-search-history-tags data-history-destinations={JSON.stringify(destinations)}></div>
   </div>
 </section>

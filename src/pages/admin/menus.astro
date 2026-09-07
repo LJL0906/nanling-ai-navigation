@@ -1,0 +1,119 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import '../../styles/admin-content.css';
+---
+<AdminLayout title="菜单管理" description="独立菜单编辑工作台" active="menus">
+  <section data-menu-admin class="menu-admin">
+    <div class="status-row">
+      <span id="menu-loading" class="menu-loading-spinner" hidden aria-hidden="true"></span>
+      <p id="menu-status" role="status" aria-live="polite" aria-atomic="true">正在加载菜单…</p>
+      <button id="menu-retry" type="button" hidden>重试加载</button>
+      <span hidden><button id="menu-logout" type="button" hidden>退出登录</button></span>
+    </div>
+    <section id="menu-workspace" hidden aria-label="菜单编辑工作台">
+      <div class="panel toolbar admin-toolbar">
+        <div><span id="menu-summary">共 0 项</span><p id="menu-mode" class="hint"></p><p id="menu-dirty" class="hint"></p></div>
+        <div class="actions">
+          <button id="menu-reload" type="button">重新加载</button>
+          <button id="menu-add" type="button">新增菜单</button>
+          <button id="menu-add-group" type="button">新增精选分组</button>
+          <button id="menu-add-resource" type="button">新增精选资源</button>
+          <button id="menu-save" type="button" class="primary">保存全部</button>
+        </div>
+      </div>
+      <p id="menu-conflict" class="warning" role="alert" hidden>版本冲突，保存已停止。请重新加载；未保存修改将丢失。</p>
+      <section class="panel list-panel" aria-label="菜单列表">
+        <form id="menu-query" class="admin-filter">
+          <label for="menu-name">菜单名称<input id="menu-name" type="search" placeholder="输入菜单名称" /></label>
+          <label id="menu-list-title" for="menu-filter">区域<select id="menu-filter"><option value="">全部区域</option><option value="sidebar">侧边栏</option><option value="sidebar-footer">侧边栏底部</option><option value="topbar">顶部导航</option><option value="topbar-actions">顶部操作区</option></select></label>
+          <label for="menu-visible">显示状态<select id="menu-visible"><option value="">全部状态</option><option value="enabled">显示</option><option value="disabled">隐藏</option><option value="parent-hidden">随父级隐藏</option></select></label>
+          <button type="submit" class="primary">查询</button><button id="menu-query-reset" type="button">重置</button>
+        </form>
+        <div class="admin-table-wrap"><table class="admin-table" aria-label="菜单列表">
+          <thead><tr><th scope="col">名称</th><th scope="col">区域</th><th scope="col">类型</th><th scope="col">父菜单</th><th scope="col">排序</th><th scope="col">显示状态</th><th scope="col">操作</th></tr></thead>
+          <tbody id="menu-list"></tbody>
+        </table></div>
+        <nav id="menu-pagination" class="admin-pagination" aria-label="菜单分页">
+          <span id="menu-page-summary" aria-live="polite">共 0 项，第 1 / 1 页</span>
+          <label for="menu-page-size">每页<select id="menu-page-size"><option value="10">10</option></select>项</label>
+          <button id="menu-prev" type="button">上一页</button><button id="menu-next" type="button">下一页</button>
+        </nav>
+      </section>
+      <dialog id="menu-dialog" class="content-dialog" aria-labelledby="menu-editor-title">
+          <header class="content-dialog-header"><p id="menu-editor-title">编辑菜单</p><button id="menu-close" class="content-dialog-close" type="button" aria-label="关闭编辑弹窗">×</button></header>
+          <fieldset id="menu-fields">
+          <div class="content-dialog-body">
+          <p id="menu-form-status" role="alert"></p>
+          <p id="menu-empty" class="hint" hidden>请选择菜单</p>
+          <form id="menu-editor" hidden>
+              <label for="menu-id">菜单 ID（只读）</label><input id="menu-id" readonly />
+              <label for="menu-label">名称</label><input id="menu-label" required maxlength="200" />
+              <div class="field-grid">
+                <div><label for="menu-location">显示区域</label><select id="menu-location"><option value="sidebar">侧边栏</option><option value="sidebar-footer">侧边栏底部</option><option value="topbar">顶部导航</option><option value="topbar-actions">顶部操作区</option></select></div>
+                <div><label for="menu-kind">菜单类型</label><select id="menu-kind"><option value="link">普通链接</option><option value="group">分组</option><option value="resource">资源链接</option><option value="category" disabled>现有分类（仅保留）</option></select></div>
+              </div>
+              <label for="menu-href">链接</label><input id="menu-href" placeholder="/favorites/ 或 https://example.com" />
+              <label for="menu-icon">图标（可选）</label><input id="menu-icon" placeholder="lucide:house" pattern="lucide:[a-z0-9]+(-[a-z0-9]+)*" />
+              <div class="field-grid">
+                <div><label for="menu-parent">父级分组</label><select id="menu-parent"><option value="">根菜单</option></select></div>
+                <div><label for="menu-order">排序（升序）</label><input id="menu-order" type="number" min="0" max="1000000" step="1" required /></div>
+              </div>
+              <label class="check"><input id="menu-enabled" type="checkbox" /> 显示菜单</label>
+              <div id="menu-curated" hidden>
+                <label for="menu-description">描述</label>
+                <textarea id="menu-description" rows="3" maxlength="4000"></textarea>
+                <div id="menu-resource-fields" hidden>
+                  <label for="menu-useCase">适用场景</label><textarea id="menu-useCase" rows="2" maxlength="4000"></textarea>
+                  <label for="menu-sourceUrl">资料来源</label><input id="menu-sourceUrl" type="url" maxlength="2048" placeholder="https://example.com/docs" />
+                  <label for="menu-sourceTitle">来源标题</label><input id="menu-sourceTitle" maxlength="255" />
+                  <label for="menu-checkedAt">核对日期</label><input id="menu-checkedAt" type="date" />
+                </div>
+              </div>
+              <details><summary>高级字段（JSON）</summary><label for="menu-payload">payload</label><textarea id="menu-payload" rows="9" spellcheck="false"></textarea></details>
+          </form>
+          </div>
+          <footer class="content-dialog-footer">
+            <button type="submit" form="menu-editor" class="primary">应用到本页草稿</button>
+            <button id="menu-revert" type="button" form="menu-editor">撤销修改</button>
+            <button id="menu-cancel" type="button" form="menu-editor">取消</button>
+            <button id="menu-delete" type="button" form="menu-editor" class="danger">删除菜单</button>
+          </footer>
+          </fieldset>
+      </dialog>
+    </section>
+  </section>
+</AdminLayout>
+<script>
+  import '../../scripts/admin-menus';
+</script>
+<style is:global>
+  .menu-admin { color: #334155; overflow-wrap: anywhere; }
+  .menu-admin [hidden] { display: none !important; }
+  .menu-admin .panel { min-width: 0; margin-top: 16px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; }
+  .menu-admin .hint { margin: 6px 0 0; color: #64748b; font-size: .8125rem; line-height: 1.65; }
+  .menu-admin .content-dialog label { display: block; margin: 12px 0 5px; font-size: .8125rem; font-weight: 550; }
+  .menu-admin .content-dialog input:not([type=checkbox]), .menu-admin .content-dialog select, .menu-admin .content-dialog textarea { box-sizing: border-box; width: 100%; min-width: 0; }
+  .menu-admin textarea { resize: vertical; font-family: monospace; }
+  .menu-admin input[readonly] { background: #f1f5f9; color: #64748b; }
+  .menu-admin button:disabled, .menu-admin fieldset:disabled { opacity: .55; }
+  .menu-admin .danger { color: #b91c1c; border-color: #fecaca; }
+  .menu-admin :is(button,input,select,textarea,summary):focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+  .menu-admin .status-row, .menu-admin .toolbar, .menu-admin .actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .menu-admin .status-row { margin-top: 16px; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; font-size: .8125rem; }
+  .menu-admin #menu-status { margin: 0; }
+  .menu-admin .menu-loading-spinner { width: 14px; height: 14px; flex: none; border: 2px solid #bfdbfe; border-top-color: #2563eb; border-radius: 50%; animation: menu-admin-spin .7s linear infinite; }
+  @keyframes menu-admin-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .menu-admin .menu-loading-spinner { animation: none; } }
+  .menu-admin .toolbar { justify-content: space-between; }
+  .menu-admin .field-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; }
+  .menu-admin fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  .menu-admin .check { display: flex; align-items: center; gap: 8px; }
+  .menu-admin input[type=checkbox] { accent-color: #2563eb; }
+  .menu-admin details { margin-top: 16px; padding-top: 12px; border-top: 1px solid #e2e8f0; }
+  .menu-admin summary { cursor: pointer; font-size: .8125rem; }
+  .menu-admin .warning { margin-top: 16px; padding: 12px 16px; border: 1px solid #fde68a; border-radius: 6px; background: #fffbeb; color: #92400e; font-size: .8125rem; }
+  .menu-admin #menu-dirty { color: #1d4ed8; }
+  .menu-admin #menu-empty { padding: 32px 12px; text-align: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; }
+  @media (max-width: 540px) { .menu-admin .field-grid { grid-template-columns: 1fr; gap: 0; } .menu-admin .actions > button { flex: 1 1 auto; } }
+  .menu-admin #menu-form-status { color: #b91c1c; white-space: pre-wrap; }
+</style>

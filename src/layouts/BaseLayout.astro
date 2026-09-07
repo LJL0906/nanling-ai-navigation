@@ -1,10 +1,17 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import { SITE } from '../config/site';
 import Sidebar from '../components/layout/Sidebar.astro';
 import Topbar from '../components/layout/Topbar.astro';
+import SiteSubmission from '../components/layout/SiteSubmission.astro';
+import NotificationDrawer from '../components/layout/NotificationDrawer.astro';
+import AnnouncementToast from '../components/layout/AnnouncementToast.astro';
 import GlobalBackground from '../components/layout/GlobalBackground.astro';
+import NavigationFeedback from '../components/layout/NavigationFeedback.astro';
+import { getPublicMenus } from '../server/menus';
+import type { MenuSeedItem } from '../server/menu-seed';
 import '../styles/global.css';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
 
 interface Props {
   title: string;
@@ -13,6 +20,7 @@ interface Props {
   canonical: string;
   robots?: string;
   ld?: Record<string, unknown>[];
+  menus?: MenuSeedItem[];
 }
 
 const {
@@ -23,6 +31,10 @@ const {
   robots = 'index,follow',
   ld = [],
 } = Astro.props;
+// HTML 与 HTTP 层保持同一索引策略；搜索引擎不必依赖客户端执行。
+Astro.response.headers.set('X-Robots-Tag', robots);
+// 顶栏与侧栏共享本次请求的菜单，保存后下一次请求仍直接读取最新版本。
+const menus = Astro.props.menus ?? await getPublicMenus();
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -42,10 +54,12 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={`${SITE.url}/logo.png`} />
+    <meta property="og:image:alt" content={`${SITE.name} Logo`} />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${SITE.url}/logo.png`} />
+    <meta name="twitter:image:alt" content={`${SITE.name} Logo`} />
 
     <meta name="theme-color" content="#fefefe" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0e1016" media="(prefers-color-scheme: dark)" />
@@ -62,11 +76,12 @@ const {
 
     <ClientRouter />
     {ld.map((node) => (
-      <script is:inline type="application/ld+json" set:html={JSON.stringify(node).replace(/</g, '\u003c')} />
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(node).replace(/</g, '\\u003c')} />
     ))}
   </head>
   <body>
     <GlobalBackground />
+    <NavigationFeedback />
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:rounded-lg focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:text-white"
@@ -74,11 +89,11 @@ const {
       跳转到主要内容
     </a>
 
-    <Sidebar />
+    <Sidebar menus={menus} />
 
     <div class="page-shell lg:pl-rail">
-      <Topbar />
-      <main id="main" class="px-4 py-6 lg:px-6" tabindex="-1">
+      <Topbar menus={menus} />
+      <main id="main" class:list={["px-4 pb-6 lg:px-6", Astro.url.pathname === "/" ? "pt-2 md:pt-6" : "pt-6"]} tabindex="-1">
         <slot />
       </main>
       <footer class="border-t border-hairline px-4 py-6 text-xs text-ink-300 lg:px-6 dark:border-white/10 dark:text-white/40">
@@ -89,12 +104,12 @@ const {
       </footer>
     </div>
 
+    <SiteSubmission />
+    <NotificationDrawer />
+    <AnnouncementToast />
+
     <script>
       import '../scripts/main';
     </script>
   </body>
 </html>
-
-
-
-

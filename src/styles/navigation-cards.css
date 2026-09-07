@@ -1,0 +1,113 @@
+/* 导航站点卡片统一为紧凑布局，不影响分类页头和详情主体。 */
+.nav-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+  gap: 10px;
+}
+
+.nav-card-grid > li { min-width: 0; }
+
+.nav-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 64px;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 5px;
+  transition: box-shadow 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.nav-card:hover,
+.nav-card:focus-within {
+  border-color: rgb(55 119 245 / 0.32);
+  box-shadow: 0 5px 16px rgb(40 65 110 / 0.16);
+  transform: translateY(-1px);
+}
+
+.dark .nav-card:hover,
+.dark .nav-card:focus-within {
+  box-shadow: 0 5px 18px rgb(0 0 0 / 0.35);
+}
+
+.nav-card > .nav-card-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.nav-card-copy { min-width: 0; flex: 1; }
+.nav-card-copy > :first-child { font-size: 14px; line-height: 20px; }
+.nav-card-copy > :nth-child(2) {
+  display: block;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.nav-card-icon { border-radius: 5px; }
+.nav-card--with-external .nav-card-copy { padding-right: 13px; }
+.nav-card-external {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border-radius: 3px;
+}
+.nav-card-external:hover { background: var(--color-brand-50); }
+/* 搜索结果保留三行信息，字号与标签统一收紧，不影响其他导航卡片。 */
+.nav-card--search .nav-card-copy > :first-child { font-size: 13px; line-height: 18px; }
+.nav-card--search .nav-card-copy > :nth-child(2) { font-size: 11px; line-height: 14px; }
+.nav-card--search .nav-card-category {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 2px;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgb(55 119 245 / 0.07);
+  color: var(--color-ink-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 14px;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+.nav-card--search .nav-card-category:hover,
+.nav-card--search .nav-card-category:focus-visible {
+  background: rgb(55 119 245 / 0.14);
+  color: var(--color-brand-500);
+}
+.dark .nav-card--search .nav-card-category { background: rgb(255 255 255 / 0.08); color: rgb(255 255 255 / 0.6); }
+.dark .nav-card--search .nav-card-category:hover,
+.dark .nav-card--search .nav-card-category:focus-visible { background: rgb(55 119 245 / 0.2); color: var(--color-brand-300); }
+
+@media (max-width: 480px) {
+  .nav-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .nav-card { padding: 6px; gap: 6px; }
+  .nav-card > .nav-card-row { gap: 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-card { transition: none; }
+  .nav-card:hover, .nav-card:focus-within { transform: none; }
+}
+
+/* 详情链接扩展到卡片空白区域；官网按钮独立置于上层，避免嵌套链接。 */
+.nav-card-detail::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.nav-card .nav-card-external { z-index: 1; }

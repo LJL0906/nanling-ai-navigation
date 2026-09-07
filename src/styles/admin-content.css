@@ -1,0 +1,82 @@
+/* 后台各模块共用的紧凑表格、工具栏、弹窗与分页规范。 */
+.admin-app .admin-content{max-width:none;padding:0;margin:0}
+.admin-app .admin-panel{border-radius:6px;box-shadow:none;margin-bottom:0}
+.admin-app .admin-filter{display:flex;align-items:end;flex-wrap:wrap;gap:12px 16px;padding:16px;border-bottom:1px solid #edf0f5}
+.admin-app .admin-filter>label,.admin-app .admin-filter>label:first-child{display:grid;gap:6px;flex:0 1 200px;min-width:0;max-width:260px;color:#536176;font-size:13px}
+.admin-app .admin-filter>label:first-child{flex-basis:240px}
+.admin-app .admin-filter input,.admin-app .admin-filter select{width:100%;min-width:0;max-width:100%;height:34px;padding:5px 10px}
+.admin-filter-actions,.admin-toolbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.admin-app .admin-filter button,.admin-toolbar button{height:34px;padding:5px 14px;font-size:13px}
+.admin-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 16px}
+.admin-app .admin-table{width:100%;min-width:700px;font-size:13px;table-layout:fixed}
+.admin-app .admin-table th{height:40px;background:#f7f9fc;font-size:12px;font-weight:600;color:#66758b}
+.admin-app .admin-table td{height:44px;vertical-align:middle;color:#34445b;line-height:20px}
+.admin-app .admin-table th,.admin-app .admin-table td{padding:8px 12px;overflow-wrap:normal}
+.admin-app .admin-table th:first-child,.admin-app .admin-table td:first-child{padding-left:16px}
+.admin-app .admin-table th:last-child,.admin-app .admin-table td:last-child{padding-right:16px}
+.admin-table .admin-col-index{width:58px;color:#8794a7}
+.admin-table .admin-col-order{width:70px;font-variant-numeric:tabular-nums}
+.admin-table .admin-col-time{width:156px;font-variant-numeric:tabular-nums;font-size:12px;white-space:nowrap}
+.admin-table .admin-col-actions{width:160px;white-space:nowrap}
+.admin-cell-title,.admin-cell-ellipsis,.content-secondary{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.admin-cell-title{font-weight:500;color:#26394f}
+.content-secondary{font-size:12px;color:#8090a4;line-height:18px;margin-top:0}
+.admin-table td>a{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#2563eb}
+.content-actions{display:flex;align-items:center;gap:2px;white-space:nowrap}
+.content-actions button{font-size:12px;border:0;background:transparent;color:#2563eb;border-radius:4px;padding:3px 7px;line-height:22px}
+.content-actions button:hover:not(:disabled){background:#eff6ff}
+.content-actions .content-danger,.content-danger{color:#dc2626}
+.content-actions .content-danger:hover:not(:disabled){background:#fef2f2}
+.content-empty{text-align:center!important;height:240px!important;color:#8a97a9!important}
+.admin-status-badge,.content-badge{display:inline-flex;align-items:center;border-radius:4px;background:#f1f5f9;color:#64748b;font-size:12px;line-height:22px;padding:0 7px;white-space:nowrap}
+[data-status=online],[data-status=active],[data-status=approved]{color:#15803d;background:#f0fdf4}
+[data-status=offline],[data-status=rejected]{color:#dc2626;background:#fef2f2}
+[data-status=pending],[data-status=pending-review]{color:#b45309;background:#fffbeb}
+.admin-app .admin-pagination{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 16px;border-top:1px solid #edf0f5;font-size:12px;color:#718096}
+.admin-app .admin-pagination>div,.admin-pagination-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:6px}
+.admin-pagination label,.admin-page-size{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;font-size:12px}
+.admin-app .admin-pagination button{min-width:30px;height:30px;padding:3px 9px;font-size:12px;line-height:22px}
+.admin-pagination select{height:30px;min-width:66px;padding:3px 6px!important;font-size:12px}
+.admin-page-numbers{display:inline-flex;align-items:center;gap:4px}
+.admin-page-numbers>span{padding:0 4px}
+.admin-page-numbers button[aria-current=page]{border-color:#2563eb;background:#2563eb;color:#fff}
+.admin-page-jump{display:inline-flex;align-items:center;gap:6px;margin-left:4px}
+.admin-app .admin-page-jump input{width:54px;min-width:0;height:30px;padding:3px 6px;font-size:12px;text-align:center}
+.content-dialog{width:min(680px,calc(100vw - 32px));max-height:calc(100dvh - 48px);padding:0;border:1px solid #e2e8f0;border-radius:8px;color:#34445b;background:#fff;box-shadow:0 24px 80px #14213d33;overflow:auto}
+.content-dialog::backdrop{background:#17243b66}
+.content-dialog form{margin:0}
+.content-dialog .content-dialog-header,.content-dialog>header{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px;background:#fff;border-bottom:1px solid #edf0f5}
+.content-dialog h2{font-size:16px;font-weight:600;margin:0}
+.content-dialog-close{display:grid;place-items:center;width:28px;height:28px;padding:0!important;line-height:1;font-size:22px;border:0;background:transparent;color:#94a3b8}
+.content-dialog-body{padding:20px}
+.content-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px;border:0;margin:0;padding:0;min-width:0}
+.content-fields label{display:grid;gap:6px;min-width:0;font-size:13px}
+.content-fields input,.content-fields select,.content-fields textarea{width:100%;box-sizing:border-box;padding:7px 10px}
+.content-fields input[readonly],.content-fields textarea[readonly]{background:#f8fafc;color:#66748b}
+.content-wide{grid-column:1/-1}
+.content-dialog .content-dialog-footer,.content-dialog>footer{position:sticky;bottom:0;z-index:2;display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid #edf0f5;background:#fff}
+.content-dialog-footer button{font-size:13px;padding:6px 16px}
+.content-details{display:grid;grid-template-columns:100px minmax(0,1fr);gap:0;margin:0;font-size:13px;line-height:1.6}
+.content-details dt,.content-details dd{margin:0;padding:10px 12px;border-bottom:1px solid #edf0f5;overflow-wrap:anywhere;white-space:pre-wrap}
+.content-details dt{background:#f8fafc;color:#7c899b}
+.content-details dd{color:#34445b}
+[data-content-error],[data-content-form-error]{white-space:pre-wrap;overflow-wrap:anywhere}
+.content-dialog .admin-alert{margin:16px 0 0;font-size:12px}
+@media(max-width:900px){.admin-app .admin-filter>label,.admin-app .admin-filter>label:first-child{flex:0 1 200px}.content-dialog{max-height:calc(100dvh - 24px)}}
+@media(max-width:600px){.admin-app .admin-filter>label,.admin-app .admin-filter>label:first-child{flex:1 1 150px;max-width:none}.content-fields{grid-template-columns:1fr}.content-wide{grid-column:auto}.content-dialog-body{padding:16px}.admin-app .admin-pagination{gap:8px}.admin-page-numbers{gap:2px}.admin-pagination-actions{row-gap:8px}.content-details{grid-template-columns:80px minmax(0,1fr)}}
+
+.admin-app .admin-table .admin-ellipsis{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reviews #review-form{margin-top:20px}
+.reviews #review-form .content-dialog-footer{margin:20px -20px -20px}
+
+/* 内容区贴边，空加载状态不保留占位；有提示或重试操作时仍正常展示。 */
+.admin-app .menu-admin .status-row{margin-top:0}
+.admin-app .menu-admin .status-row:has(#menu-status:empty):has(#menu-loading[hidden]):has(#menu-retry[hidden]){display:none}
+.admin-app .menu-admin #menu-workspace>.panel:first-child{margin-top:0}
+
+[data-category-admin-root] .admin-table th:nth-child(3){width:140px}
+[data-admin-root] .admin-table{min-width:980px}
+[data-admin-root] .admin-table th:nth-child(3){width:210px}
+[data-admin-root] .admin-table th:nth-child(4){width:120px}
+[data-admin-root] .admin-table th:nth-child(6){width:90px}
+.admin-app .admin-pagination>span:first-child{white-space:nowrap}

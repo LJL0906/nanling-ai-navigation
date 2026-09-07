@@ -1,5 +1,5 @@
 ---
-/** 六列站点网格，窄屏逐级降列。 */
+/** 紧凑站点网格，根据容器宽度自动排列。 */
 import type { Site } from '../../lib/types';
 import SiteCard from './SiteCard.astro';
 
@@ -9,8 +9,9 @@ interface Props {
 }
 const { sites, label } = Astro.props;
 ---
-<ul class="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6" aria-label={label}>
+<ul class="nav-card-grid" aria-label={label}>
   {sites.map((site) => (
     <li><SiteCard site={site} /></li>
   ))}
 </ul>
+

@@ -1,59 +1,96 @@
 ---
-/** 顶部导航条：左侧下拉菜单组，右侧主题 / 通知 / 用户区。 */
+/** 悬浮导航：数据驱动的胶囊标签与统一下拉面板。 */
 import { Icon } from 'astro-icon/components';
-import { TOP_NAV, CURRENT_USER } from '../../config/site';
+import type { MenuSeedItem } from '../../server/menu-seed';
 import IconButton from '../ui/IconButton.astro';
+import MenuIcon from './MenuIcon.astro';
+import MenuIconLink from './MenuIconLink.astro';
+import NavSearch from './NavSearch.astro';
+import AccountStatus from './AccountStatus.astro';
+import '../../styles/topbar.css';
 
+// 不捕获仓储异常，不在前台静默回退静态菜单。
+interface Props { menus: MenuSeedItem[]; }
+const { menus } = Astro.props;
+const roots = (location: string) => menus.filter((item) => item.location === location && item.parentId === null && (item.kind === 'link' || item.kind === 'group'));
+const children = (group: MenuSeedItem) => menus.filter((item) => item.location === group.location && item.parentId === group.id && (item.kind === 'resource' || item.kind === 'link'));
+const text = (item: MenuSeedItem, key: string) => typeof item.payload[key] === 'string' ? item.payload[key] as string : undefined;
+const description = (item: MenuSeedItem) => text(item, 'description') || text(item, 'useCase');
 const path = Astro.url.pathname;
-/** 下拉组内任一子项匹配当前路径时高亮该组 */
-const groupActive = (children: readonly { href: string }[]) =>
-  children.some((c) => (c.href === '/' ? path === '/' : path.startsWith(c.href)));
+const linkActive = (href: string | null) => path === href;
+const linkAttributes = (item: MenuSeedItem) => ({
+  target: text(item, 'target'),
+  rel: [text(item, 'rel'), text(item, 'target') === '_blank' ? 'noopener noreferrer' : undefined].filter(Boolean).join(' ') || undefined,
+});
+const panelId = (item: MenuSeedItem) => `topbar-panel-${item.id}`;
+const triggerId = (item: MenuSeedItem) => `topbar-${item.id}`;
+// 保留服务端顺序；仅将相邻同类子项放入同一个原样式容器。
+const childSections = (group: MenuSeedItem) => children(group).reduce<{ resource: boolean; items: MenuSeedItem[] }[]>((sections, item) => {
+  const resource = item.kind === 'resource';
+  const last = sections.at(-1);
+  if (last?.resource === resource) last.items.push(item);
+  else sections.push({ resource, items: [item] });
+  return sections;
+}, []);
 ---
-<header
-  class="cyber-topbar sticky top-0 z-30 flex h-13 items-center justify-between gap-3 px-4 lg:px-6"
->
-  <div class="flex items-center gap-1">
-    <IconButton
-      icon="lucide:menu"
-      label="打开导航菜单"
-      class="lg:hidden"
-      data-drawer-open
-      aria-controls="sidebar"
-      aria-expanded="false"
-    />
-
-    <nav class="hidden items-center gap-1 md:flex" aria-label="快捷导航">
-      {TOP_NAV.map((group) => (
-        <details class="relative" data-dropdown>
-          <summary
-            class:list={[
-              'cyber-nav__item flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] transition-colors marker:content-none',
-              groupActive(group.children)
-                ? 'cyber-nav__item--active font-medium text-brand-600'
-                : 'text-ink-500 hover:text-brand-600',
-            ]}
-          >
-            {group.label}
-            <Icon name="lucide:chevron-down" style="width:13px;height:13px" class="opacity-60" />
+<header class="cyber-topbar topbar sticky top-0 z-30 flex h-13 items-center justify-between gap-3 px-4 lg:px-6">
+  <div class="topbar__navigation">
+    <IconButton icon="lucide:menu" label="打开导航菜单" class="topbar__drawer lg:hidden" data-drawer-open aria-controls="sidebar" aria-expanded="false" />
+    <nav class="topbar__links" aria-label="快捷导航">
+      {roots('topbar').map((item) => item.kind === 'link' ? (
+        <a href={item.href} {...linkAttributes(item)} class:list={['floating-nav__trigger', { 'is-active': linkActive(item.href) }]} aria-current={linkActive(item.href) ? 'page' : undefined}>
+          {item.icon && <MenuIcon name={item.icon} style="width:18px;height:18px" />}
+          {item.label}
+        </a>
+      ) : (
+        <details class="floating-nav floating-nav--resources" data-dropdown>
+          <summary class="floating-nav__trigger" id={triggerId(item)} aria-controls={panelId(item)}>
+            <span>{item.label}</span>
+            <Icon name="lucide:chevron-down" class="floating-nav__chevron" />
           </summary>
-          <div
-            class="cyber-nav__menu absolute left-0 top-[calc(100%+6px)] z-40 min-w-[134px] rounded-lg p-2"
-          >
-            {group.children.map((child) => (
-              <a
-                href={child.href}
-                class="cyber-nav__link block rounded-md px-3 py-2 text-[13px] transition-colors"
-              >
-                {child.label}
-              </a>
-            ))}
+          <div class="floating-nav__panel floating-nav__panel--resources" id={panelId(item)} aria-labelledby={triggerId(item)}>
+            <div class="floating-nav__heading">
+              {item.icon && <span class="floating-nav__icon"><MenuIcon name={item.icon} /></span>}
+              <div class="floating-nav__intro">
+                <p class="floating-nav__title">{item.label}<span class="floating-nav__count">{children(item).filter((child) => child.kind === 'resource').length} 个精选</span></p>
+                <p class="floating-nav__description">{description(item)}</p>
+              </div>
+            </div>
+            {childSections(item).map((section) => section.resource ? <ul class="floating-nav__resources">
+              {section.items.map((resource) => (
+                <li>
+                  <a href={resource.href} {...linkAttributes(resource)} class="floating-nav__link floating-nav__resource">
+                    {resource.icon && <span class="floating-nav__icon"><MenuIcon name={resource.icon} /></span>}
+                    <span class="floating-nav__copy">
+                      <span class="floating-nav__name">{resource.label}</span>
+                      <span class="floating-nav__description">{description(resource)}</span>
+                    </span>
+                    <Icon name="lucide:arrow-up-right" class="floating-nav__arrow" />
+                    {text(resource, 'target') === '_blank' && <span class="sr-only">（新窗口打开）</span>}
+                  </a>
+                </li>
+              ))}
+            </ul> : <div class="floating-nav__footer">
+              {section.items.map((link) => (
+                <a href={link.href} {...linkAttributes(link)} class="floating-nav__link floating-nav__all">
+                  <span class="floating-nav__copy">
+                    <span>{link.label}</span>
+                    {description(link) && <span class="floating-nav__description">{description(link)}</span>}
+                  </span>
+                  <MenuIcon name={link.icon || 'lucide:arrow-right'} class="floating-nav__arrow" />
+                  {text(link, 'target') === '_blank' && <span class="sr-only">（新窗口打开）</span>}
+                </a>
+              ))}
+              <p class="floating-nav__note">官网直达 · 来源见精选页</p>
+            </div>)}
           </div>
         </details>
       ))}
     </nav>
   </div>
-
-  <div class="flex items-center gap-1">
+  <div class="topbar__actions flex min-w-0 flex-1 items-center justify-end gap-1">
+    <NavSearch />
+    <AccountStatus />
     <button type="button" class="theme-switch hidden" aria-label="切换主题" title="切换主题" aria-pressed="false" data-theme-toggle>
       <span class="theme-switch__track" aria-hidden="true">
         <Icon name="lucide:sun" style="width:13px;height:13px" />
@@ -62,29 +99,30 @@ const groupActive = (children: readonly { href: string }[]) =>
       </span>
       <span class="sr-only">切换浅色和深色主题</span>
     </button>
-    <IconButton icon="lucide:bell" label="通知" href="/notifications/" />
-    <details class="relative" data-dropdown>
-      <summary
-        class="flex cursor-pointer list-none items-center gap-2 rounded-full py-1 pr-2 pl-1 transition-colors marker:content-none hover:bg-chip dark:hover:bg-white/10"
-      >
-        <span
-          class="grid h-8 w-8 place-items-center rounded-full bg-linear-to-br from-brand-400 to-brand-600 text-xs font-semibold text-white"
-          aria-hidden="true"
-        >
-          {CURRENT_USER.name.charAt(0)}
-        </span>
-        <span class="hidden text-sm text-ink-700 sm:inline dark:text-white/80">{CURRENT_USER.name}</span>
-        <Icon name="lucide:chevron-down" style="width:13px;height:13px" class="opacity-60" />
-      </summary>
-      <div
-        class="absolute right-0 top-[calc(100%+6px)] z-40 min-w-[132px] rounded-xl border border-hairline bg-surface p-2 shadow-[0_16px_40px_-16px_rgb(20_24_40/0.25)] dark:border-white/10 dark:bg-[#171a23]"
-      >
-        <a href="/favorites/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">我的收藏</a>
-        <a href="/history/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">最近访问</a>
-        <a href="/settings/" class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10">设置</a>
-      </div>
-    </details>
+    {roots('topbar-actions').map((item) => item.kind === 'link' ? <MenuIconLink item={item} class="shrink-0" /> : (
+      <details class="floating-nav floating-nav--user shrink-0" data-dropdown>
+        <summary class="floating-nav__trigger floating-nav__user" id={triggerId(item)} aria-controls={panelId(item)} data-account-menu-trigger={item.id === 'topbar-actions:user' ? '' : undefined} aria-label={item.id === 'topbar-actions:user' ? '未登录的用户菜单' : `${item.label}的用户菜单`}>
+          <span class="floating-nav__avatar" aria-hidden="true" data-account-menu-avatar={item.id === 'topbar-actions:user' ? '' : undefined}>{item.id === 'topbar-actions:user' ? '未' : item.icon ? <MenuIcon name={item.icon} style="width:18px;height:18px" /> : item.label.charAt(0)}</span>
+          <span class="hidden sm:inline" data-account-menu-name={item.id === 'topbar-actions:user' ? '' : undefined}>{item.id === 'topbar-actions:user' ? '未登录' : item.label}</span>
+          <Icon name="lucide:chevron-down" class="floating-nav__chevron" />
+        </summary>
+        <div class="floating-nav__panel" id={panelId(item)} aria-labelledby={triggerId(item)}>
+          {text(item, 'caption') && <p class="floating-nav__caption">{text(item, 'caption')}</p>}
+          {item.id === 'topbar-actions:user' && <a href="/login/" data-account-open="login" data-account-menu-login class="floating-nav__link"><MenuIcon name="lucide:log-in" /><span>登录</span></a>}
+          {children(item).map((child) => (
+            <a href={child.href} {...linkAttributes(child)} class="floating-nav__link" aria-current={linkActive(child.href) ? 'page' : undefined}>
+              {child.icon && <span class="floating-nav__icon"><MenuIcon name={child.icon} /></span>}
+              <span class="floating-nav__copy">
+                <span>{child.label}</span>
+                {description(child) && <span class="floating-nav__description">{description(child)}</span>}
+              </span>
+              <Icon name={linkActive(child.href) ? 'lucide:check' : 'lucide:arrow-up-right'} class="floating-nav__arrow" />
+              {text(child, 'target') === '_blank' && <span class="sr-only">（新窗口打开）</span>}
+            </a>
+          ))}
+        </div>
+      </details>
+    ))}
   </div>
 </header>
-
 

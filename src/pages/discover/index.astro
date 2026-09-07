@@ -1,0 +1,82 @@
+---
+/** 顶部导航的完整精选目录：按用途组织，并展示已填写的资料来源。 */
+import { Icon } from 'astro-icon/components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublicMenus } from '../../server/menus';
+import { curatedGroupsFromMenus } from '../../lib/curated-menu-directory';
+import { breadcrumb, itemList } from '../../lib/seo';
+import '../../styles/curated-resources.css';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+// 查询失败交由服务端报错，绝不退回静态目录。
+export const prerender = false;
+Astro.response.headers.set('Cache-Control', 'no-store');
+const groups = curatedGroupsFromMenus(await getPublicMenus());
+const resources = groups.flatMap((group) => group.resources);
+const canonical = `${SITE.url}/discover/`;
+const title = `工具精选_按用途找工具 | ${SITE.name}`;
+const description = `精选 ${resources.length} 个真实工具与学习资源，按用途分组展示工具与资料来源。`;
+const ld = [
+  breadcrumb([{ name: '首页', url: `${SITE.url}/` }, { name: '工具精选', url: canonical }]),
+  itemList('工具精选', resources.map((resource) => ({ name: resource.name, url: new URL(resource.url, SITE.url).href }))),
+];
+---
+<BaseLayout title={title} description={description} canonical={canonical} ld={ld}>
+  <div class="curated-directory">
+    <header class="curated-hero">
+      <div class="curated-hero__copy">
+        <h1>工具精选</h1>
+        <nav class="curated-jump-links" aria-label="精选资源分组">
+          {groups.map((group) => (
+            <a href={`#${group.id}`}><Icon name={group.icon} />{group.label}<span>{group.resources.length}</span></a>
+          ))}
+        </nav>
+      </div>
+    </header>
+
+    {groups.length === 0 && <p role="status">暂无公开精选分组，请稍后再来。</p>}
+    {groups.map((group, groupIndex) => (
+      <section id={group.id} class="curated-section" aria-labelledby={`${group.id}-title`}>
+        <header class="curated-section__header">
+          <span class="curated-section__index">0{groupIndex + 1}</span>
+          <div>
+            <h2 id={`${group.id}-title`}><Icon name={group.icon} />{group.label}</h2>
+            <p>{group.description}</p>
+          </div>
+          <span class="curated-section__count">{group.resources.length} 个入口</span>
+        </header>
+        {group.resources.length === 0 && <p role="status">此分组暂无公开资源。</p>}
+        <ul class="curated-grid">
+          {group.resources.map((resource) => (
+            <li class="curated-card" data-curated-resource={resource.id}>
+              <article>
+                <div class="curated-card__heading">
+                  <span class="curated-card__monogram" aria-hidden="true">{resource.name.slice(0, 1).toUpperCase()}</span>
+                  <div>
+                    <h3><a href={resource.url} target="_blank" rel="noopener noreferrer" aria-label={`${resource.name}，打开资源（新标签页）`}>{resource.name}<Icon name="lucide:arrow-up-right" /></a></h3>
+                    <span class="curated-card__domain">{resource.domain}</span>
+                  </div>
+                </div>
+                <p class="curated-card__description">{resource.description || '暂未填写描述'}</p>
+                <p class="curated-card__use"><Icon name="lucide:crosshair" /><span>{resource.useCase || '暂未填写用途'}</span></p>
+                <div class="curated-card__footer">
+                  <details class="curated-source">
+                    <summary><Icon name="lucide:book-open" />资料来源<Icon name="lucide:chevron-down" /></summary>
+                    <div>
+                      {resource.sourceUrl ? <a href={resource.sourceUrl} target="_blank" rel="noopener noreferrer">{resource.sourceTitle || '查看来源'}<span class="sr-only">（新标签页）</span><Icon name="lucide:arrow-up-right" /></a> : <p>暂未填写来源</p>}
+                      <p>资料核对：{resource.checkedAt ? <time datetime={resource.checkedAt}>{resource.checkedAt}</time> : '暂未填写核对日期'}</p>
+                    </div>
+                  </details>
+                  <a class="curated-card__visit" href={resource.url} target="_blank" rel="noopener noreferrer">访问资源<span class="sr-only">：{resource.name}（新标签页）</span><Icon name="lucide:arrow-up-right" /></a>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    <a class="curated-more" href="/categories/">浏览全部分类 <Icon name="lucide:arrow-right" /></a>
+  </div>
+</BaseLayout>

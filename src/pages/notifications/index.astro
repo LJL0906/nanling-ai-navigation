@@ -1,9 +1,5 @@
 ---
-import ComingSoon from '../../components/layout/ComingSoon.astro';
+// 保留旧链接与公告预览入口；通知统一在当前首页抽屉展示。
+const kind = Astro.url.searchParams.get('kind');
+return Astro.redirect(`/?notifications=${kind === 'submission' || kind === 'announcement' ? kind : 'site'}`, 302);
 ---
-<ComingSoon
-  heading="通知"
-  note="暂时没有新的通知。站点更新与新增收录会在这里集中展示。"
-  icon="lucide:bell"
-  path="/notifications/"
-/>

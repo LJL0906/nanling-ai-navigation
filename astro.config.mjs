@@ -1,9 +1,12 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import icon from 'astro-icon';
+import node from '@astrojs/node';
 
 export default defineConfig({
   site: 'https://nav.ljianl.com',
+  output: 'server',
+  adapter: node({ mode: 'standalone' }),
   compressHTML: true,
   server: { host: '0.0.0.0' },
   // 不配置 include：astro-icon 只内联实际用到的图标，避免打包整套图标集

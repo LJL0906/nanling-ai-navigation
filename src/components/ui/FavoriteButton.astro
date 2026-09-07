@@ -1,0 +1,10 @@
+---
+import { Icon } from 'astro-icon/components';
+import '../../styles/personal.css';
+interface Props { siteId: string; name: string; }
+const { siteId, name } = Astro.props;
+---
+<button type="button" class="favorite-button" data-favorite-id={siteId} data-site-name={name}
+  aria-label={`收藏 ${name}`} title={`收藏 ${name}`} aria-pressed="false">
+  <Icon is:inline name="lucide:star" class="favorite-icon" style="width:15px;height:15px" />
+</button>

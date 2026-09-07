@@ -1,0 +1,19 @@
+---
+/** 数据菜单使用完整的服务端 Lucide 集合，不依赖 astro-icon 的构建期收集。 */
+import { icons } from '@iconify-json/lucide';
+import { getIconData, iconToSVG, replaceIDs } from '@iconify/utils';
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  name: string | null;
+  class?: string;
+  style?: string;
+}
+const { name, ...attributes } = Astro.props;
+const lucide = name?.startsWith('lucide:');
+const data = lucide ? getIconData(icons, name!.slice('lucide:'.length)) : null;
+if (lucide && !data) throw new Error(`菜单图标不存在：${name}`);
+const svg = data ? iconToSVG(data) : null;
+---
+{svg ? <svg {...svg.attributes} {...attributes} data-icon={name} aria-hidden="true" set:html={replaceIDs(svg.body)} />
+  : name ? <Icon name={name} {...attributes} /> : null}

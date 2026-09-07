@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+---
+<BaseLayout title={`用户注册 | ${SITE.name}`} description={`注册${SITE.name}普通用户账号`} canonical={`${SITE.url}/register/`} robots="noindex,nofollow">
+  <section class="mx-auto max-w-lg py-10 text-ink-900 dark:text-white">
+    <div class="rounded-3xl border border-hairline bg-surface p-7 shadow-sm dark:border-white/10 dark:bg-slate-900/80">
+      <h1 class="text-3xl font-bold">注册账号</h1>
+      <form data-account-form="register" class="mt-8 space-y-5" method="post" action="/api/account/register">
+        <div><label for="account-username" class="mb-2 block text-sm">用户名</label><input id="account-username" name="username" required minlength="3" maxlength="32" pattern="[A-Za-z0-9_]{3,32}" autocomplete="username" autocapitalize="none" spellcheck="false" title="3–32 位字母、数字或下划线" class="w-full rounded-xl border border-hairline bg-transparent px-4 py-3 dark:border-white/20" /></div>
+        <div><label for="account-password" class="mb-2 block text-sm">密码</label><input id="account-password" name="password" type="password" required minlength="10" maxlength="128" autocomplete="new-password" placeholder="10–128 个字符" class="w-full rounded-xl border border-hairline bg-transparent px-4 py-3 dark:border-white/20" /></div>
+        <button type="submit" class="w-full rounded-xl bg-brand-500 px-4 py-3 text-white disabled:opacity-50">注册并登录</button>
+        <p data-account-message role="status" aria-live="polite" class="text-sm text-ink-500 empty:hidden dark:text-white/65"></p>
+      </form>
+      <a href="/login/" data-account-switch class="mt-6 inline-block text-sm text-brand-500">已有账号？前往登录</a>
+      <noscript><p class="mt-4">请启用 JavaScript 完成注册。</p></noscript>
+    </div>
+  </section>
+</BaseLayout>
+<script>import '../scripts/account-form';</script>

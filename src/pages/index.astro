@@ -1,42 +1,91 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../config/site';
-import { homeCategories, categories, siteCount } from '../lib/data';
-import { websiteNode, itemList } from '../lib/seo';
-import Hero from '../components/home/Hero.astro';
-import SectionHeader from '../components/ui/SectionHeader.astro';
-import SiteGrid from '../components/home/SiteGrid.astro';
-import PreviewGrid from '../components/home/PreviewGrid.astro';
+import { getNavigation } from '../lib/data';
+import { getPublicMenus } from '../server/menus';
+import { createWebsiteNode, itemList } from '../lib/seo';
+import HomeNavigation from '../components/home/HomeNavigation.astro';
 
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+// 两份独立数据并行读取，避免冷启动时串行等待数据库连接。
+const [{ categories, siteCount }, menus] = await Promise.all([getNavigation(), getPublicMenus()]);
+
+const domain = new URL(SITE.url).hostname;
 const title = `${SITE.name}_网站导航大全 | ${SITE.slogan}`;
 const description = `${SITE.description}已收录 ${siteCount} 个优质站点。`;
 const keywords = `${SITE.keywords},${categories.map((c) => c.name).join(',')}`;
 const ld = [
-  websiteNode,
+  createWebsiteNode(SITE),
   itemList(
     '网站分类列表',
     categories.map((c) => ({ name: c.name, url: `${SITE.url}/${c.slug}/` }))
   ),
 ];
 ---
-<BaseLayout title={title} description={description} keywords={keywords} canonical={`${SITE.url}/`} ld={ld}>
-  <Hero />
-
-  <div class="mt-8 space-y-9">
-    {homeCategories.map((cat) => (
-      <section aria-labelledby={`sec-${cat.slug}`}>
-        <SectionHeader
-          id={`sec-${cat.slug}`}
-          title={cat.name}
-          moreHref={`/${cat.slug}/`}
-          moreLabel={cat.home.moreLabel}
-        />
-        {cat.home.layout === 'preview' ? (
-          <PreviewGrid sites={cat.sites} label={`${cat.name}站点列表`} />
-        ) : (
-          <SiteGrid sites={cat.sites} label={`${cat.name}站点列表`} />
-        )}
-      </section>
-    ))}
-  </div>
+<BaseLayout title={title} description={description} keywords={keywords} canonical={`${SITE.url}/`} ld={ld} menus={menus}>
+  <header id="home-welcome" class="home-welcome" aria-labelledby="welcome-title">
+    <div class="welcome-heading">
+      <h1 id="welcome-title" class="welcome-title">
+        <span class="sr-only">欢迎来到{SITE.name}，{SITE.heroTitle}</span>
+        <svg class="welcome-wordmark" viewBox="0 0 310 44" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="welcome-ink" x1="0" y1="0" x2="1" y2="0">
+              <stop class="welcome-ink-start" offset="0%" />
+              <stop class="welcome-ink-end" offset="100%" />
+            </linearGradient>
+          </defs>
+          <text x="0" y="31" fill="url(#welcome-ink)">欢迎来到{SITE.name}</text>
+          <path d="M104 39 Q174 35 247 39" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".3" />
+        </svg>
+        <svg class="welcome-message" viewBox="0 0 340 44" aria-hidden="true" focusable="false">
+          <text x="0" y="30" fill="currentColor">{SITE.heroTitle}</text>
+        </svg>
+      </h1>
+      <a class="welcome-domain" href={SITE.url} aria-label={`网站首页 ${domain}`}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <ellipse cx="12" cy="12" rx="4" ry="9" />
+          <path d="M3 12h18" />
+        </svg>
+        <span>{domain}</span>
+      </a>
+    </div>
+    <p class="welcome-subtitle">{SITE.heroSubtitle}</p>
+  </header>
+  <HomeNavigation categories={categories} />
 </BaseLayout>
+
+
+
+
+<style>
+  .home-welcome { margin-bottom: 8px; padding: 16px 4px 0; }
+  .welcome-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+  .welcome-title { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; margin: 0; min-width: 0; }
+  .welcome-title svg { display: block; max-width: 100%; height: auto; overflow: visible; }
+  .welcome-wordmark { width: 310px; color: #6688cd; }
+  .welcome-wordmark text { font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif; font-size: 26px; font-weight: 400; letter-spacing: 1px; }
+  .welcome-ink-start { stop-color: #263752; }
+  .welcome-ink-end { stop-color: #597bc1; }
+  .welcome-message { width: 300px; color: #758399; }
+  .welcome-message text { font-family: "STKaiti", "KaiTi", "Noto Serif SC", "Songti SC", serif; font-size: 25px; font-weight: 400; letter-spacing: 1px; }
+  .welcome-domain { display: inline-flex; flex: none; align-items: center; gap: 7px; padding: 6px 11px; border: 1px solid #d8e4f6; border-radius: 999px; background: linear-gradient(135deg, #ffffffd9, #edf4ffb3); color: #5d79a9; box-shadow: inset 0 1px 0 #ffffffb3; text-decoration: none; transition: border-color .2s, background-color .2s; }
+  .welcome-domain svg { width: 14px; height: 14px; }
+  .welcome-domain span { font-family: ui-monospace, "Cascadia Code", monospace; font-size: 11px; letter-spacing: .2px; }
+  .welcome-domain:hover { border-color: #9db9e6; background: #edf4ff; }
+  .welcome-domain:focus-visible { outline: 2px solid #5984d4; outline-offset: 4px; }
+  :global(.dark) .welcome-ink-start { stop-color: #e0e9fa; }
+  :global(.dark) .welcome-ink-end { stop-color: #96b5ee; }
+  :global(.dark) .welcome-message { color: #9eacc2; }
+  :global(.dark) .welcome-domain { border-color: #8eaff02e; background: linear-gradient(135deg, #20304b, #1a2539); color: #afc5ed; box-shadow: inset 0 1px 0 #ffffff08; }
+  :global(.dark) .welcome-domain:hover { border-color: #8eaff080; }
+  @media (max-width: 767px) {
+    .home-welcome { padding-top: 0; }
+  }
+  @media (max-width: 540px) {
+    .welcome-heading { gap: 10px; }
+    .welcome-title { flex-direction: column; align-items: flex-start; }
+    .welcome-wordmark { width: 282px; }
+    .welcome-message { width: 270px; }
+  }
+</style>

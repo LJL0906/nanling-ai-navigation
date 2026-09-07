@@ -1,0 +1,22 @@
+---
+/** 动态菜单的图标入口，保留 IconButton 的样式，但不走构建期图标收集。 */
+import type { MenuSeedItem } from '../../server/menu-seed';
+import MenuIcon from './MenuIcon.astro';
+interface Props { item: MenuSeedItem; class?: string }
+const { item, class: cls } = Astro.props;
+const target = typeof item.payload.target === 'string' ? item.payload.target : undefined;
+const rel = [typeof item.payload.rel === 'string' ? item.payload.rel : '', target === '_blank' ? 'noopener noreferrer' : ''].filter(Boolean).join(' ') || undefined;
+---
+<a
+  class:list={['inline-flex h-9 w-9 items-center justify-center rounded-lg text-ink-400 transition hover:bg-chip hover:text-ink-700 dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white', cls]}
+  href={item.href}
+  target={target}
+  rel={rel}
+  aria-label={item.label}
+  title={item.label}
+  data-notification-open={item.href?.replace(/\/$/, '') === '/notifications' ? '' : undefined}
+  aria-haspopup={item.href?.replace(/\/$/, '') === '/notifications' ? 'dialog' : undefined}
+  aria-controls={item.href?.replace(/\/$/, '') === '/notifications' ? 'notification-drawer' : undefined}
+>
+  {item.icon ? <MenuIcon name={item.icon} style="width:18px;height:18px" /> : <span>{item.label}</span>}
+</a>

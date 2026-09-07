@@ -3,27 +3,48 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "node --env-file-if-exists=.env ./node_modules/astro/bin/astro.mjs dev",
+    "build": "npm run validate:data && astro build",
+    "preview": "node --env-file-if-exists=.env ./node_modules/astro/bin/astro.mjs preview",
     "typecheck": "astro check",
-    "scrape:yiliudz": "node scripts/爬取一流导航.mjs"
+    "validate:data": "node scripts/校验导航数据.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "test:build": "node scripts/检查构建产物.mjs",
+    "test:seo": "node scripts/检查SEO产物.mjs",
+    "test:settings:mysql": "node --env-file-if-exists=.env scripts/验收全站配置闭环.mjs",
+    "scrape:yiliudz": "node scripts/爬取一流导航.mjs",
+    "start": "node --env-file-if-exists=.env ./dist/server/entry.mjs",
+    "db:migrate-notifications": "node --env-file-if-exists=.env scripts/迁移通知与提交归属.mjs",
+    "db:migrate-accounts": "node --env-file-if-exists=.env scripts/迁移用户与个人记录.mjs",
+    "test:accounts:mysql": "node --env-file-if-exists=.env scripts/验收用户与个人记录.mjs",
+    "db:check": "node --env-file-if-exists=.env scripts/管理数据库.mjs check",
+    "db:migrate": "node --env-file-if-exists=.env scripts/管理数据库.mjs migrate",
+    "db:import": "node --env-file-if-exists=.env scripts/管理数据库.mjs import",
+    "db:sync-menus": "node --env-file-if-exists=.env scripts/同步菜单数据.mjs",
+    "db:verify-static": "node --env-file-if-exists=.env scripts/校验数据库同步.mjs",
+    "test:menus:mysql": "node --env-file-if-exists=.env scripts/验收菜单闭环.mjs"
   },
   "dependencies": {
+    "@astrojs/node": "^11.1.5",
     "@iconify-json/lucide": "^1.2.71",
     "@iconify-json/simple-icons": "^1.2.59",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.0.0",
-    "astro-icon": "^1.1.5",
+    "ali-oss": "^6.23.0",
+    "astro": "^7.3.1",
+    "astro-icon": "^1.2.0",
+    "mysql2": "^3.24.3",
     "tailwindcss": "^4.1.18"
   },
   "allowScripts": {
     "esbuild@0.27.7": true,
     "esbuild@0.25.12": true,
-    "sharp@0.34.5": true
+    "sharp@0.34.5": true,
+    "esbuild@0.28.2": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/ali-oss": "^6.23.3",
+    "@types/node": "^24.13.3",
     "typescript": "^5.9.3"
   }
 }

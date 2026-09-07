@@ -1,0 +1,49 @@
+---
+import lucide from '@iconify-json/lucide/icons.json';
+const iconNames = [...new Set([...Object.keys(lucide.icons), ...Object.keys(lucide.aliases ?? {})])].sort();
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import '../../styles/admin-content.css';
+---
+<AdminLayout title="分类管理" active="categories">
+  <section data-category-admin-root>
+    <p data-content-login hidden><a class="admin-link" href="/admin/login/" target="_blank" rel="noopener noreferrer">在新标签页重新登录</a></p>
+    <p class="admin-alert" data-content-error role="alert" hidden></p>
+    <section class="admin-panel" aria-label="分类列表">
+      <form data-admin-filter class="admin-filter" role="search">
+        <label>关键词<input data-admin-query type="search" placeholder="名称或 slug" /></label>
+        <div class="admin-filter-actions"><button class="admin-primary" type="submit">查询</button><button data-admin-reset type="reset">重置</button></div>
+      </form>
+      <div class="admin-toolbar">
+        <button class="admin-primary" data-content-add type="button" disabled>新增分类</button><button data-content-refresh type="button">刷新</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th scope="col" class="admin-col-index">序号</th><th scope="col" class="admin-col-name">分类名称</th><th scope="col">站点数量</th><th scope="col" class="admin-col-order">排序</th><th scope="col" class="admin-col-actions">操作</th></tr></thead><tbody data-content-items></tbody></table></div>
+      <div class="admin-pagination" role="navigation" aria-label="分类列表分页"><span data-content-pagination></span><div class="admin-pagination-actions"><label>每页条数<select data-admin-page-size><option value="10">10</option></select></label><button data-admin-prev disabled>上一页</button><button data-admin-next disabled>下一页</button></div></div>
+    </section>
+    <dialog class="content-dialog" data-content-dialog aria-labelledby="category-editor-title">
+      <form data-content-form class="content-dialog-form">
+        <header class="content-dialog-header"><h2 id="category-editor-title" data-content-title>新增分类</h2><button class="content-dialog-close" data-content-cancel type="button" aria-label="关闭编辑弹窗">×</button></header>
+        <div class="content-dialog-body">
+        <fieldset data-content-fields class="content-fields">
+          <label>名称<input name="name" maxlength="100" required /></label>
+          <label>Slug<input name="slug" maxlength="191" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" title="小写字母、数字，以单个连字符分隔" required autocomplete="off" /></label>
+          <label>颜色<input name="color" maxlength="7" pattern="#[a-fA-F0-9]{6}" title="六位十六进制色值，例如 #2563eb" required placeholder="#2563eb" /></label>
+          <label>图标<input name="icon" maxlength="100" list="content-icons" pattern="lucide:[a-z0-9]+(?:-[a-z0-9]+)*" title="请选择已安装的 lucide 图标" required placeholder="lucide:folder" /></label>
+          <label>排序<input name="order" type="number" min="0" max="1000000" step="1" value="0" required /></label>
+        </fieldset>
+        <datalist id="content-icons">{iconNames.map(name => <option value={`lucide:${name}`} />)}</datalist>
+        <p data-content-login hidden><a class="admin-link" href="/admin/login/" target="_blank" rel="noopener noreferrer">在新标签页重新登录</a></p>
+        <p data-content-form-error class="admin-alert" role="alert" hidden></p>
+        </div>
+        <footer class="content-dialog-footer"><button data-content-cancel type="button">取消</button><button class="admin-primary" data-content-save type="submit">保存</button></footer>
+      </form>
+    </dialog>
+    <dialog class="content-dialog" data-content-details-dialog aria-labelledby="categories-details-title">
+      <div class="content-dialog-form">
+        <header class="content-dialog-header"><h2 id="categories-details-title">分类详情</h2><button class="content-dialog-close" data-content-details-close type="button" aria-label="关闭详情弹窗">×</button></header>
+        <div class="content-dialog-body"><dl class="content-details" data-content-details></dl></div>
+        <footer class="content-dialog-footer"><button data-content-details-close type="button">关闭</button></footer>
+      </div>
+    </dialog>
+  </section>
+</AdminLayout>
+<script>import '../../scripts/admin-categories';</script>

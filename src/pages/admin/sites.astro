@@ -1,0 +1,50 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import '../../styles/admin-content.css';
+---
+<AdminLayout title="导航卡片" active="sites">
+  <section data-admin-root>
+    <p data-content-login hidden><a class="admin-link" href="/admin/login/" target="_blank" rel="noopener noreferrer">在新标签页重新登录</a></p>
+    <p class="admin-alert" data-content-error role="alert" hidden></p>
+    <section class="admin-panel" aria-label="站点列表">
+      <form data-admin-filter class="admin-filter" role="search">
+        <label>关键词<input data-admin-query type="search" placeholder="名称、网址、描述或标签" /></label>
+        <label>所属分类<select data-admin-category><option value="">全部分类</option></select></label>
+        <label>验证状态<select data-admin-verification><option value="">全部状态</option><option value="unverified">未验证</option><option value="online">在线</option><option value="offline">离线</option><option value="redirect">重定向</option><option value="blocked">受限</option><option value="active">有效</option><option value="pending-review">待审核</option></select></label>
+        <div class="admin-filter-actions"><button class="admin-primary" type="submit">查询</button><button data-admin-reset type="reset">重置</button></div>
+      </form>
+      <div class="admin-toolbar">
+        <button class="admin-primary" data-content-add type="button" disabled>新增站点</button><button data-content-refresh type="button">刷新</button>
+      </div>
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th scope="col" class="admin-col-index">序号</th><th scope="col" class="admin-col-name">站点名称</th><th scope="col">站点地址</th><th scope="col">所属分类</th><th scope="col">标签</th><th scope="col">验证状态</th><th scope="col" class="admin-col-order">排序</th><th scope="col" class="admin-col-actions">操作</th></tr></thead><tbody data-admin-sites></tbody></table></div>
+      <div class="admin-pagination" role="navigation" aria-label="站点列表分页"><span data-content-pagination></span><div class="admin-pagination-actions"><label>每页条数<select data-admin-page-size><option value="10">10</option></select></label><button data-admin-prev disabled>上一页</button><button data-admin-next disabled>下一页</button></div></div>
+    </section>
+    <dialog class="content-dialog" data-content-dialog aria-labelledby="site-editor-title">
+      <form data-content-form class="content-dialog-form">
+        <header class="content-dialog-header"><h2 id="site-editor-title" data-content-title>新增站点</h2><button class="content-dialog-close" data-content-cancel type="button" aria-label="关闭编辑弹窗">×</button></header>
+        <div class="content-dialog-body">
+        <fieldset data-content-fields class="content-fields">
+          <label>名称<input name="name" maxlength="100" required /></label>
+          <label>Slug<input name="slug" maxlength="191" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" title="小写字母、数字，以单个连字符分隔" required autocomplete="off" /></label>
+          <label class="content-wide">网址<input name="url" maxlength="2048" type="url" required placeholder="https://example.com" /></label>
+          <label>分类<select name="category" required></select></label>
+          <label>排序<input name="sortOrder" type="number" min="0" max="1000000" step="1" value="0" required /></label>
+          <label class="content-wide">描述<textarea name="description" maxlength="2000" rows="3"></textarea></label>
+          <label class="content-wide">标签<input name="tags" placeholder="多个标签用逗号分隔" /></label>
+        </fieldset>
+        <p data-content-login hidden><a class="admin-link" href="/admin/login/" target="_blank" rel="noopener noreferrer">在新标签页重新登录</a></p>
+        <p data-content-form-error class="admin-alert" role="alert" hidden></p>
+        </div>
+        <footer class="content-dialog-footer"><button data-content-cancel type="button">取消</button><button class="admin-primary" data-content-save type="submit">保存</button></footer>
+      </form>
+    </dialog>
+    <dialog class="content-dialog" data-content-details-dialog aria-labelledby="sites-details-title">
+      <div class="content-dialog-form">
+        <header class="content-dialog-header"><h2 id="sites-details-title">站点详情</h2><button class="content-dialog-close" data-content-details-close type="button" aria-label="关闭详情弹窗">×</button></header>
+        <div class="content-dialog-body"><dl class="content-details" data-content-details></dl></div>
+        <footer class="content-dialog-footer"><button data-content-details-close type="button">关闭</button></footer>
+      </div>
+    </dialog>
+  </section>
+</AdminLayout>
+<script>import '../../scripts/admin';</script>

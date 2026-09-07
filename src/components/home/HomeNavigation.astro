@@ -1,0 +1,63 @@
+---
+import type { Category } from '../../lib/types';
+import { buildHomeSection } from '../../lib/home-sections';
+import SiteCard from './SiteCard.astro';
+import { isBrandIcon } from '../../lib/brand-icon.ts';
+import BrandIcon from '../ui/BrandIcon.astro';
+import { Icon } from 'astro-icon/components';
+import '../../styles/home-navigation.css';
+
+interface Props { categories: Category[]; }
+const { categories } = Astro.props;
+const { homeSectionPageSize: pageSize } = await Astro.locals.getRuntimeSettings();
+
+const templateSite = categories.find((category) => category.sites.length > 0)?.sites[0];
+const sections = categories.map((category) => buildHomeSection(category));
+const icons = [...new Set(categories.flatMap((category) => category.sites.map((site) => site.icon)).filter(isBrandIcon))];
+---
+<div class="home-navigation space-y-6" data-home-navigation data-home-page-size={pageSize}>
+  {categories.map((category, index) => (
+    <section id={category.slug} class="home-section" data-home-section={category.slug} aria-labelledby={`section-title-${category.slug}`}>
+      <header class="home-section-header">
+        <h2 id={`section-title-${category.slug}`} class="home-section-title">
+          <Icon name={category.icon} style="width:20px;height:20px" class="text-brand-500" />
+          <a href={`/${category.slug}/`} title={`浏览全部${category.name}`}>{category.name}</a>
+        </h2>
+        <a class="home-section-all" href={`/${category.slug}/`}>全部 {category.sites.length} 个 <span aria-hidden="true">›</span></a>
+      </header>
+      <div class="home-section-tabbar">
+        <button type="button" class="home-section-tab-arrow" data-home-tabs-prev hidden aria-label={`向左滚动${category.name}分类`} aria-controls={`home-tabs-${category.slug}`}>
+          <Icon name="lucide:chevron-left" width={16} height={16} />
+        </button>
+        <div id={`home-tabs-${category.slug}`} class="home-section-tabs" role="tablist" aria-label={`${category.name}二级分类`}>
+          {sections[index].tabs.map((tab, tabIndex) => (
+            <button type="button" role="tab" id={`home-tab-${category.slug}-${encodeURIComponent(tab.key)}`} class="home-section-tab" data-home-tab={tab.key}
+              aria-selected={tabIndex === 0 ? 'true' : 'false'} tabindex={tabIndex === 0 ? 0 : -1} aria-controls={`home-panel-${category.slug}`}>
+              {tab.label}<span class="sr-only">，{tab.indices.length} 个站点</span>
+            </button>
+          ))}
+        </div>
+        <button type="button" class="home-section-tab-arrow" data-home-tabs-next hidden aria-label={`向右滚动${category.name}分类`} aria-controls={`home-tabs-${category.slug}`}>
+          <Icon name="lucide:chevron-right" width={16} height={16} />
+        </button>
+      </div>
+      <div id={`home-panel-${category.slug}`} role="tabpanel" aria-labelledby={`home-tab-${category.slug}-all`} tabindex="0" data-home-panel>
+        <ul class="nav-card-grid" aria-label={`${category.name}站点列表`} data-home-sites>
+          {category.sites.slice(0, pageSize).map((site) => <li><SiteCard site={site} /></li>)}
+        </ul>
+        <div class="home-section-footer">
+          <p data-home-status role="status" aria-live="polite">共 {category.sites.length} 个，已显示 {Math.min(pageSize, category.sites.length)} 个</p>
+          <button type="button" class="home-section-more" data-home-more hidden aria-controls={`home-panel-${category.slug}`}>加载更多</button>
+        </div>
+      </div>
+    </section>
+  ))}
+  <noscript><p>每个分区先展示最多 {pageSize} 个站点，请通过各分区“全部”入口访问完整分类；启用 JavaScript 可切换二级分类或加载更多。</p></noscript>
+  {templateSite && <template data-home-card><li><SiteCard site={{ ...templateSite, icon: null, mono: '?' }} /></li></template>}
+  {icons.map((icon) => <template data-home-icon={icon}><BrandIcon inline icon={icon} size={36} class="nav-card-icon" /></template>)}
+  <script is:inline type="application/json" data-home-data set:html={JSON.stringify(sections).replace(/</g, '\\u003c')} />
+  <script>import '../../scripts/homeNavigation';</script>
+</div>
+
+
+

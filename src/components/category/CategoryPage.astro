@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/category-tabs.css';
+import { paginateCategory } from '../../lib/category-facets.ts';
+import { PAGE_SIZE } from '../../lib/pagination';
+import { createWebsiteNode, breadcrumb, itemList } from '../../lib/seo';
+import type { Category } from '../../lib/types';
+import { Icon } from 'astro-icon/components';
+import Card from '../ui/Card.astro';
+import BrandIcon from '../ui/BrandIcon.astro';
+import FavoriteButton from '../ui/FavoriteButton.astro';
+
+const { site: SITE } = await Astro.locals.getRuntimeSettings();
+
+interface Props {
+  category: Category;
+  page: number;
+}
+
+const { category, page: requestedPage } = Astro.props;
+const { tabs, selected: defaultTab, total, totalPages, page, offset, sites: pageSites } =
+  paginateCategory(category, Astro.url.searchParams.get('sub'), requestedPage, PAGE_SIZE);
+const pageHref = (number: number, key = defaultTab.key) => {
+  const path = number === 1 ? `/${category.slug}/` : `/${category.slug}/page/${number}/`;
+  return key === 'all' ? path : `${path}?sub=${encodeURIComponent(key)}`;
+};
+// 筛选结果不进入索引；普通分页各自规范化，避免把不同页的工具合并到首页。
+const isFiltered = Astro.url.searchParams.has('sub');
+const canonical = `${SITE.url}${isFiltered ? pageHref(1, 'all') : pageHref(page, 'all')}`;
+const robots = isFiltered || requestedPage !== page ? 'noindex,follow' : 'index,follow';
+const detailHref = (site: Category['sites'][number]) => `/${site.categorySlug}/${site.slug}/`;
+const collectionUrl = `${SITE.url}${pageHref(page)}`;
+const pageSuffix = page > 1 ? `（第 ${page} 页）` : '';
+const title = `${category.name}${defaultTab.key === 'all' ? '' : ' · ' + defaultTab.label}_网站导航${pageSuffix} | ${SITE.name}`;
+const description = `${category.desc}当前筛选共 ${total} 个站点，第 ${page} 页，共 ${totalPages} 页。`;
+const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
+  .filter((number) => number === 1 || number === totalPages || Math.abs(number - page) <= 2);
+
+const ld = [
+  createWebsiteNode(SITE),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    url: collectionUrl,
+    description,
+    inLanguage: 'zh-CN',
+    isPartOf: { '@id': `${SITE.url}/#website` },
+  },
+  breadcrumb([
+    { name: '首页', url: `${SITE.url}/` },
+    { name: category.name, url: `${SITE.url}${pageHref(1, 'all')}` },
+    ...(page > 1 ? [{ name: `第 ${page} 页`, url: collectionUrl }] : []),
+  ]),
+  itemList(
+    `${category.name}站点列表${pageSuffix}`,
+    pageSites.map((site) => ({ name: site.name, url: `${SITE.url}${detailHref(site)}` }))
+  ),
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  keywords={category.keywords}
+  canonical={canonical}
+  robots={robots}
+  ld={ld}
+>
+  <div data-category-page data-total-sites={total}>
+    <nav class="flex items-center gap-1.5 text-xs text-ink-300 dark:text-white/40" aria-label="面包屑">
+      <a href="/" class="transition-colors hover:text-brand-500">首页</a>
+      <Icon name="lucide:chevron-right" style="width:13px;height:13px" />
+      {page === 1 ? (
+        <span class="text-ink-500 dark:text-white/70">{category.name}</span>
+      ) : (
+        <>
+          <a href={pageHref(1, 'all')} class="transition-colors hover:text-brand-500">{category.name}</a>
+          <Icon name="lucide:chevron-right" style="width:13px;height:13px" />
+          <span class="text-ink-500 dark:text-white/70">第 {page} 页</span>
+        </>
+      )}
+    </nav>
+
+    <header
+      class="mt-4 flex items-start gap-4 rounded-2xl border border-hairline bg-linear-to-br from-white to-[#f7f8fc] p-6 dark:border-white/10 dark:from-white/5 dark:to-white/[0.02]"
+    >
+      <BrandIcon icon={category.icon} color={category.color} size={48} />
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-ink-900 dark:text-white">{category.name}</h1>
+        <p class="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-ink-400 dark:text-white/55">{category.desc}</p>
+      </div>
+    </header>
+
+    {tabs.length > 0 && (
+      <div class="category-tabbar">
+        <button type="button" class="category-tab-arrow" data-category-tabs-prev aria-label="向左滚动分类" aria-controls={`category-tabs-${category.slug}`} hidden>
+          <Icon name="lucide:chevron-left" style="width:16px;height:16px" />
+        </button>
+        <nav id={`category-tabs-${category.slug}`} class="category-tabs" aria-label={`${category.name}细分分类`} data-category-tabs={category.slug}>
+          {tabs.map((tab) => (
+            <a href={pageHref(1, tab.key)} data-category-tab={tab.key} aria-current={tab === defaultTab ? 'true' : undefined} class:list={['category-tab', tab === defaultTab && 'category-tab--active']}>{tab.label}</a>
+          ))}
+        </nav>
+        <button type="button" class="category-tab-arrow" data-category-tabs-next aria-label="向右滚动分类" aria-controls={`category-tabs-${category.slug}`} hidden>
+          <Icon name="lucide:chevron-right" style="width:16px;height:16px" />
+        </button>
+      </div>
+    )}
+
+    <h2 class="mt-8 mb-4 text-[17px] font-semibold text-ink-900 dark:text-white">
+      <span data-results-label>{defaultTab.label}</span>
+      <span class="ml-1 text-xs font-normal text-ink-300 dark:text-white/40">共 <span data-results-count>{total}</span> 个</span>
+    </h2>
+
+    <ul class="nav-card-grid" data-category-sites>
+      {pageSites.map((site) => (
+        <li data-site-slug={site.slug}>
+          <Card siteId={site.id} class="nav-card nav-card--with-external nav-card--with-favorite">
+            <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={32} class="nav-card-icon" />
+            <div class="nav-card-copy">
+              <h3 class="truncate text-sm font-medium text-ink-900 dark:text-white">
+                <a href={site.url} target="_blank" rel="noopener noreferrer" class="category-site-link transition-colors hover:text-brand-500" aria-label={`直达 ${site.name} 官网（新窗口打开）`}>{site.name}</a>
+              </h3>
+              <p class="mt-1 line-clamp-2 text-xs leading-relaxed text-ink-300 dark:text-white/45">{site.desc}</p>
+              <a
+                href={detailHref(site)}
+                class="nav-card-external text-brand-500"
+                title={`查看 ${site.name} 详情`}
+              >
+                <span class="sr-only">查看 {site.name} 详情</span>
+                <Icon name="lucide:info" style="width:12px;height:12px" />
+              </a>
+            </div>
+            <FavoriteButton siteId={site.id} name={site.name} />
+          </Card>
+        </li>
+      ))}
+    </ul>
+
+    {totalPages > 1 && (
+      <div data-category-pagination class="mt-6 text-center">
+        <p class="mb-3 text-xs text-ink-300 dark:text-white/40">
+          第 {page} / {totalPages} 页 · 显示第 {offset + 1}–{offset + pageSites.length} 个站点
+        </p>
+        <nav class="flex flex-wrap items-center justify-center gap-2 text-xs" aria-label={`${category.name}分页`}>
+          {page > 1 && <a href={pageHref(page - 1)} aria-label={`上一页，第 ${page - 1} 页`} rel="prev" class="pagination-link">上一页</a>}
+          {pageNumbers.map((number, index) => (
+            <>
+              {index > 0 && number - pageNumbers[index - 1] > 1 && <span class="px-1 text-ink-300" aria-hidden="true">…</span>}
+              <a
+                href={pageHref(number)}
+                aria-label={`第 ${number} 页`}
+                aria-current={number === page ? 'page' : undefined}
+                class:list={['pagination-link', number === page && 'pagination-link--active']}
+              >{number}</a>
+            </>
+          ))}
+          {page < totalPages && <a href={pageHref(page + 1)} aria-label={`下一页，第 ${page + 1} 页`} rel="next" class="pagination-link">下一页</a>}
+        </nav>
+      </div>
+    )}
+  </div>
+  <script>
+    import '../../scripts/category';
+  </script>
+</BaseLayout>
+
+<style>
+  .pagination-link {
+    border: 1px solid var(--color-hairline);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-ink-400);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .pagination-link:hover,
+  .pagination-link--active {
+    border-color: var(--color-brand-500);
+    color: var(--color-brand-500);
+  }
+  .pagination-link--active { font-weight: 600; }
+  :global(.dark) .pagination-link { border-color: rgb(255 255 255 / 0.1); color: rgb(255 255 255 / 0.55); }
+  :global(.dark) .pagination-link:hover,
+  :global(.dark) .pagination-link--active { border-color: var(--color-brand-300); color: var(--color-brand-300); }
+</style>
+
+<style>
+  /* 将官网链接扩展到整卡，收藏和右侧入口保留独立点击区域。 */
+  .category-site-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+  }
+  .category-site-link:focus-visible::after {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+  .nav-card-external { z-index: 2; }
+</style>

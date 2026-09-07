@@ -1,0 +1,18 @@
+---
+import { getNavigation } from '../../../lib/data';
+import { PAGE_SIZE } from '../../../lib/pagination';
+import CategoryPage from '../../../components/category/CategoryPage.astro';
+
+export const prerender = false;
+
+const { categories } = await getNavigation();
+const category = categories.find((item) => item.slug === Astro.params.category);
+const pageParam = Astro.params.page ?? '';
+const page = Number(pageParam);
+if (!category || !/^[1-9]\d*$/.test(pageParam) || !Number.isSafeInteger(page) || page > Math.max(1, Math.ceil(category.sites.length / PAGE_SIZE))) {
+  return Astro.rewrite('/404/');
+}
+if (page === 1) return Astro.redirect(`/${category.slug}/${Astro.url.search}`, 301);
+---
+<CategoryPage category={category} page={page} />
+
