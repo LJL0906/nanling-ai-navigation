@@ -19,3 +19,35 @@ export const SIDEBAR_SHORTCUTS: SidebarItem[] = [
   { label: '我的收藏', href: '/favorites/', icon: 'lucide:star' },
   { label: '最近访问', href: '/history/', icon: 'lucide:clock' },
 ];
+
+
+export interface CategoryTab {
+  key: string;
+  label: string;
+  siteSlugs: string[];
+}
+
+/** 分类页精选筛选项。只展示有明确内容归属的分类，避免把来源标签直接暴露给用户。 */
+export const CATEGORY_TABS: Record<string, CategoryTab[]> = {
+  ai: [
+    { key: 'chat', label: 'AI 对话', siteSlugs: ['chatgpt', 'claude'] },
+    { key: 'image', label: 'AI 绘画', siteSlugs: ['midjourney'] },
+    { key: 'writing', label: 'AI 写作', siteSlugs: ['copy-ai'] },
+    { key: 'office', label: 'AI 办公', siteSlugs: ['notion-ai'] },
+    { key: 'music', label: 'AI 音乐', siteSlugs: ['suno'] },
+  ],
+  design: [
+    { key: 'design', label: '在线设计', siteSlugs: ['figma'] },
+    { key: 'images', label: '图片素材', siteSlugs: ['unsplash', 'pexels'] },
+    { key: 'icons', label: '图标素材', siteSlugs: ['iconfont'] },
+    { key: 'colors', label: '配色工具', siteSlugs: ['coolors'] },
+    { key: 'community', label: '设计社区', siteSlugs: ['dribbble'] },
+  ],
+  dev: [
+    { key: 'code-hosting', label: '代码托管', siteSlugs: ['github', 'gitee'] },
+    { key: 'containers', label: '容器工具', siteSlugs: ['docker'] },
+    { key: 'api', label: 'API 工具', siteSlugs: ['postman'] },
+    { key: 'qa', label: '开发问答', siteSlugs: ['stack-overflow'] },
+    { key: 'editor', label: '代码编辑器', siteSlugs: ['vs-code'] },
+  ],
+};

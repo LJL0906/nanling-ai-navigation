@@ -1,61 +1,29 @@
 ---
 /** 首页 Hero：主标题 + 搜索框 + 热门搜索标签。装饰图形用 CSS/SVG 近似设计稿的 3D 渲染。 */
 import { Icon } from 'astro-icon/components';
-import { SITE, HOT_SEARCHES } from '../../config/site';
-import Chip from '../ui/Chip.astro';
 ---
-<section
-  class="relative isolate overflow-hidden rounded-2xl bg-linear-to-br from-white via-[#f7f8fb] to-hero-fade px-6 py-12 text-center sm:px-10 sm:py-14 dark:from-[#171a24] dark:via-[#161923] dark:to-[#1b1f2c]"
-  aria-labelledby="hero-title"
->
-  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-    <div
-      class="absolute -top-8 -left-10 h-40 w-40 rotate-12 rounded-3xl bg-linear-to-br from-white to-[#e8ecf6] opacity-80 dark:from-white/8 dark:to-white/4 dark:opacity-100"
-    >
-    </div>
-    <div
-      class="absolute bottom-5 left-5 h-20 w-20 -rotate-12 rounded-2xl bg-linear-to-tr from-[#dfe5f4] to-white opacity-75 dark:from-white/8 dark:to-white/3 dark:opacity-100"
-    >
-    </div>
-    <div class="absolute top-7 right-12 h-28 w-24 skew-y-6 rounded-[28px] bg-linear-to-br from-brand-400 to-brand-600 opacity-90"></div>
-    <div class="absolute top-24 right-32 h-16 w-14 -skew-y-12 rounded-2xl bg-linear-to-b from-brand-300/70 to-brand-500/55"></div>
-    <svg class="absolute -right-8 bottom-0 h-40 w-72 text-[#dfe4ef] dark:text-white/8" viewBox="0 0 300 160" fill="none">
-      <path d="M-10 150C60 150 120 96 300 30" stroke="currentColor" stroke-width="16" stroke-linecap="round" opacity="0.7" />
-      <path d="M-10 172C70 172 140 120 300 66" stroke="currentColor" stroke-width="12" stroke-linecap="round" opacity="0.5" />
-    </svg>
-  </div>
-
-  <h1 id="hero-title" class="text-[26px] font-bold tracking-tight text-ink-900 sm:text-[32px] dark:text-white">
-    {SITE.heroTitle}
-  </h1>
-  <p class="mx-auto mt-3 max-w-xl text-[13px] text-ink-400 sm:text-sm dark:text-white/55">{SITE.heroSubtitle}</p>
-
-  <form
-    class="mx-auto mt-8 flex h-14 max-w-155 items-center gap-2.5 rounded-full bg-surface pr-1.5 pl-5 shadow-[0_10px_30px_-12px_rgb(20_24_40/0.18)] focus-within:ring-2 focus-within:ring-brand-500/35 dark:bg-white/10"
-    action="/search/"
-    method="get"
-    role="search"
-  >
+<section class="cyber-hero relative isolate" aria-label="站内搜索">
+  <form class="cyber-search" action="/search/" method="get" role="search" data-search-history-form>
     <label for="site-search" class="sr-only">搜索网站、工具、资源</label>
-    <Icon name="lucide:search" style="width:19px;height:19px" class="shrink-0 text-ink-300" />
+    <Icon name="lucide:terminal" style="width:17px;height:17px" class="shrink-0 text-brand-500" />
     <input
       id="site-search"
       type="search"
       name="q"
-      placeholder="搜索网站、工具、资源..."
+      placeholder="输入关键词，开始检索..."
       autocomplete="off"
-      class="h-full min-w-0 flex-1 bg-transparent text-sm text-ink-900 outline-none placeholder:text-ink-300 dark:text-white"
+      class="h-full min-w-0 flex-1 bg-transparent text-sm text-ink-900 outline-none placeholder:text-ink-300"
     />
-    <button
-      type="submit"
-      class="h-11 shrink-0 rounded-full bg-brand-500 px-7 text-sm font-medium text-white transition hover:bg-brand-600"
-    >
-      搜索
+    <button type="submit" class="cyber-search__button" aria-label="搜索" title="搜索">
+      <Icon name="lucide:arrow-right" style="width:18px;height:18px" />
     </button>
   </form>
 
-  <div class="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs">
-    <span class="text-ink-400 dark:text-white/50">热门搜索：</span>
-    {HOT_SEARCHES.map((word) => <Chip href={`/search/?q=${encodeURIComponent(word)}`}>{word}</Chip>)}
+  <div class="cyber-search-history" data-search-history hidden>
+    <span class="cyber-search-history__label">
+      <Icon name="lucide:history" style="width:14px;height:14px" />
+      <span>历史搜索</span>
+    </span>
+    <div class="cyber-search-history__tags" data-search-history-tags></div>
   </div>
 </section>

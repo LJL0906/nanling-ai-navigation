@@ -10,7 +10,7 @@ const groupActive = (children: readonly { href: string }[]) =>
   children.some((c) => (c.href === '/' ? path === '/' : path.startsWith(c.href)));
 ---
 <header
-  class="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-hairline bg-surface/90 px-4 backdrop-blur lg:px-6 dark:border-white/10 dark:bg-[#0e1016]/90"
+  class="cyber-topbar sticky top-0 z-30 flex h-13 items-center justify-between gap-3 px-4 lg:px-6"
 >
   <div class="flex items-center gap-1">
     <IconButton
@@ -27,22 +27,22 @@ const groupActive = (children: readonly { href: string }[]) =>
         <details class="relative" data-dropdown>
           <summary
             class:list={[
-              'flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm transition-colors marker:content-none',
+              'cyber-nav__item flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-3 py-1.5 text-[13px] transition-colors marker:content-none',
               groupActive(group.children)
-                ? 'bg-chip font-medium text-ink-900 dark:bg-white/10 dark:text-white'
-                : 'text-ink-500 hover:bg-chip hover:text-ink-900 dark:text-white/65 dark:hover:bg-white/10',
+                ? 'cyber-nav__item--active font-medium text-brand-600'
+                : 'text-ink-500 hover:text-brand-600',
             ]}
           >
             {group.label}
             <Icon name="lucide:chevron-down" style="width:13px;height:13px" class="opacity-60" />
           </summary>
           <div
-            class="absolute left-0 top-[calc(100%+6px)] z-40 min-w-[134px] rounded-xl border border-hairline bg-surface p-2 shadow-[0_16px_40px_-16px_rgb(20_24_40/0.25)] dark:border-white/10 dark:bg-[#171a23]"
+            class="cyber-nav__menu absolute left-0 top-[calc(100%+6px)] z-40 min-w-[134px] rounded-lg p-2"
           >
             {group.children.map((child) => (
               <a
                 href={child.href}
-                class="block rounded-lg px-3 py-2.5 text-[13px] text-ink-500 transition-colors hover:bg-chip hover:text-brand-500 dark:text-white/70 dark:hover:bg-white/10"
+                class="cyber-nav__link block rounded-md px-3 py-2 text-[13px] transition-colors"
               >
                 {child.label}
               </a>
@@ -54,7 +54,14 @@ const groupActive = (children: readonly { href: string }[]) =>
   </div>
 
   <div class="flex items-center gap-1">
-    <IconButton icon="lucide:sun-medium" label="切换主题" data-theme-toggle aria-pressed="false" />
+    <button type="button" class="theme-switch hidden" aria-label="切换主题" title="切换主题" aria-pressed="false" data-theme-toggle>
+      <span class="theme-switch__track" aria-hidden="true">
+        <Icon name="lucide:sun" style="width:13px;height:13px" />
+        <Icon name="lucide:moon" style="width:13px;height:13px" />
+        <span class="theme-switch__thumb"></span>
+      </span>
+      <span class="sr-only">切换浅色和深色主题</span>
+    </button>
     <IconButton icon="lucide:bell" label="通知" href="/notifications/" />
     <details class="relative" data-dropdown>
       <summary
@@ -79,3 +86,5 @@ const groupActive = (children: readonly { href: string }[]) =>
     </details>
   </div>
 </header>
+
+

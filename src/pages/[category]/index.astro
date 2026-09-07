@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE } from '../../config/site';
 import { categories } from '../../lib/data';
+import { CATEGORY_TABS } from '../../config/nav';
 import { websiteNode, breadcrumb, itemList } from '../../lib/seo';
 import type { Category } from '../../lib/types';
 import { Icon } from 'astro-icon/components';
@@ -16,6 +17,7 @@ const { category } = Astro.props as { category: Category };
 const canonical = `${SITE.url}/${category.slug}/`;
 const title = `${category.name}_网站导航 | ${SITE.name}`;
 const description = `${category.desc}精选 ${category.sites.length} 个${category.name}优质网站，收藏夹必备。`;
+const tabs = CATEGORY_TABS[category.slug] ?? [];
 
 const ld = [
   websiteNode,
@@ -61,14 +63,23 @@ const ld = [
     </div>
   </header>
 
+  {tabs.length > 0 && (
+    <nav class="scrollbar-hidden mt-6 -mb-1 flex overflow-x-auto border-b border-hairline dark:border-white/10" aria-label={`${category.name}细分分类`} data-category-tabs data-tabs={JSON.stringify(tabs)}>
+      <a href={`/${category.slug}/`} data-category-tab="all" class="category-tab category-tab--active shrink-0">全部</a>
+      {tabs.map((tab) => (
+        <a href={`/${category.slug}/?sub=${tab.key}`} data-category-tab={tab.key} class="category-tab shrink-0">{tab.label}</a>
+      ))}
+    </nav>
+  )}
+
   <h2 class="mt-8 mb-4 text-[17px] font-semibold text-ink-900 dark:text-white">
-    全部站点
-    <span class="ml-1 text-xs font-normal text-ink-300 dark:text-white/40">共 {category.sites.length} 个</span>
+    <span data-results-label>全部站点</span>
+    <span class="ml-1 text-xs font-normal text-ink-300 dark:text-white/40">共 <span data-results-count>{category.sites.length}</span> 个</span>
   </h2>
 
-  <ul class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3">
+  <ul class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-3" data-category-sites>
     {category.sites.map((site) => (
-      <li>
+      <li data-site-slug={site.slug}>
         <Card class="flex gap-3.5 p-4">
           <BrandIcon icon={site.icon} mono={site.mono ?? site.name.charAt(0)} color={site.color} size={42} />
           <div class="min-w-0 flex-1">
@@ -90,4 +101,22 @@ const ld = [
       </li>
     ))}
   </ul>
+  {tabs.length > 0 && (
+    <script is:inline>
+      const tabs = JSON.parse(document.querySelector('[data-category-tabs]')?.getAttribute('data-tabs') || '[]');
+      const params = new URLSearchParams(window.location.search);
+      const selected = params.get('sub') || 'all';
+      const tabLinks = document.querySelectorAll('[data-category-tab]');
+      const cards = document.querySelectorAll('[data-site-slug]');
+      const count = document.querySelector('[data-results-count]');
+      const label = document.querySelector('[data-results-label]');
+      const activeTab = selected === 'all' ? null : tabs.find((tab) => tab.key === selected);
+      const allowed = activeTab ? new Set(activeTab.siteSlugs) : null;
+      tabLinks.forEach((tab) => tab.classList.toggle('category-tab--active', tab.dataset.categoryTab === selected));
+      cards.forEach((card) => { card.hidden = Boolean(allowed && !allowed.has(card.dataset.siteSlug || '')); });
+      if (count) count.textContent = String([...cards].filter((card) => !card.hidden).length);
+      if (label) label.textContent = activeTab?.label || '全部站点';
+    </script>
+  )}
+
 </BaseLayout>

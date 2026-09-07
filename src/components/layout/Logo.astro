@@ -1,35 +1,11 @@
 ---
-/** 品牌标识：六边形 + 内部镂空环，还原设计稿的蓝绿渐变。 */
+/** 统一使用 public/logo.png，确保侧栏与站点元信息使用同一份 Logo 资产。 */
 interface Props {
   size?: number;
+  class?: string;
 }
-const { size = 38 } = Astro.props;
+
+const { size = 40, class: className } = Astro.props;
 ---
-<svg width={size} height={size} viewBox="0 0 48 48" role="img" aria-label="楠灵AI 导航 Logo">
-  <defs>
-    <linearGradient id="logo-body" x1="8" y1="42" x2="40" y2="6" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3f5ff0" />
-      <stop offset="0.55" stop-color="#5b74f7" />
-      <stop offset="1" stop-color="#8f9dfb" />
-    </linearGradient>
-    <linearGradient id="logo-leaf" x1="24" y1="6" x2="42" y2="22" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#33d9a0" />
-      <stop offset="1" stop-color="#22b5c9" />
-    </linearGradient>
-    <clipPath id="logo-clip">
-      <path d="M24 2.6 42.4 13.3v21.4L24 45.4 5.6 34.7V13.3Z" />
-    </clipPath>
-  </defs>
-  <g clip-path="url(#logo-clip)">
-    <path d="M24 2.6 42.4 13.3v21.4L24 45.4 5.6 34.7V13.3Z" fill="url(#logo-body)" />
-    <path d="M23 1h21v20L30 30Z" fill="url(#logo-leaf)" />
-  </g>
-  <path
-    d="M24 15.4 31.4 19.7v8.6L24 32.6l-7.4-4.3v-8.6Z"
-    fill="none"
-    stroke="#ffffff"
-    stroke-width="3.4"
-    stroke-linejoin="round"
-  />
-</svg>
+<img src="/logo.png" width={size} height={size} class={className} alt="楠灵AI 导航 Logo" />
 
