@@ -9,9 +9,9 @@ const read = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), '
 const { categories } = adaptNavigation(read('../src/data/导航数据.json'), read('../src/data/sites.json'));
 const sections = categories.map((category) => buildHomeSection(category));
 
-test('首页18个独立分区的全部Tab覆盖2400条站点，不截断数据', () => {
+test('首页18个独立分区的全部Tab覆盖2401条站点，不截断数据', () => {
   assert.equal(sections.length, 18);
-  assert.equal(sections.reduce((n, section) => n + section.sites.length, 0), 2400);
+  assert.equal(sections.reduce((n, section) => n + section.sites.length, 0), 2401);
   for (const section of sections) {
     assert.deepEqual(section.tabs[0].indices, section.sites.map((_, i) => i));
     assert.ok(section.sites.every((site) => site.categorySlug === section.slug));

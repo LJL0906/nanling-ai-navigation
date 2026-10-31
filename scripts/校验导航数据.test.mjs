@@ -215,7 +215,7 @@ test('拒绝损坏的根节点及遗漏旧数据，不抛出意外异常', () =>
   assert.match(validateNavigationData(fixture().data).errors.join('\n'), /必须提供旧精选数据/);
 });
 
-test('真实统一数据：全部 2400 个站点、18 个分类、70 条旧精选均保留', async () => {
+test('真实统一数据：全部 2401 个站点、18 个分类、70 条旧精选均保留', async () => {
   const data = JSON.parse(await readFile(new URL('../src/data/导航数据.json', import.meta.url), 'utf8'));
   const legacy = JSON.parse(await readFile(new URL('../src/data/sites.json', import.meta.url), 'utf8'));
   const collections = {};
@@ -224,13 +224,13 @@ test('真实统一数据：全部 2400 个站点、18 个分类、70 条旧精�
   }
   const report = validateNavigationData(data, legacy, { iconifyCollections: collections });
   assert.deepEqual(report.errors, []);
-  assert.deepEqual(report.stats, { categories: 18, sites: 2400, unverified: 2400, legacySites: 70, legacyMatched: 70 });
+  assert.deepEqual(report.stats, { categories: 18, sites: 2401, unverified: 2401, legacySites: 70, legacyMatched: 70 });
   const icons = data.sites.reduce((counts, site) => {
     const type = site.icon?.type ?? 'null';
     counts[type] = (counts[type] ?? 0) + 1;
     return counts;
   }, {});
-  assert.deepEqual(icons, { null: 1875, url: 496, raw: 1, iconify: 28 });
+  assert.deepEqual(icons, { null: 1876, url: 496, raw: 1, iconify: 28 });
   const bilibili = data.sites.find((site) => site.sources.some((source) => source.dataset === 'sites.json' && source.recordId === 'learn/bilibili'));
   assert.deepEqual(bilibili.sources.filter((source) => source.dataset === 'sites.json').map((source) => source.recordId).sort(), ['entertainment/bilibili-fun', 'learn/bilibili']);
   const reduced = { ...data, sites: data.sites.slice(1) };
@@ -243,8 +243,8 @@ test('命令行从任意工作目录运行，成功返回 0 并报告中文全�
   const child = spawnSync(process.execPath, [script], { cwd: tmpdir(), encoding: 'utf8' });
   assert.ifError(child.error);
   assert.equal(child.status, 0, child.stderr);
-  assert.match(child.stdout, /18 个分类，2400 个站点/);
-  assert.match(child.stdout, /unverified.*2400/);
+  assert.match(child.stdout, /18 个分类，2401 个站点/);
+  assert.match(child.stdout, /unverified.*2401/);
   assert.match(child.stdout, /70\/70/);
   assert.match(child.stdout, /校验通过/);
 });

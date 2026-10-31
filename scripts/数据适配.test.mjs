@@ -10,12 +10,12 @@ const legacy = JSON.parse(readFileSync(new URL('../src/data/sites.json', import.
 const result = adaptNavigation(raw, legacy);
 const allSites = result.categories.flatMap((category) => category.sites);
 
-test('18个分类及2400个站点全量接入，未验证记录不丢失', () => {
+test('18个分类及2401个站点全量接入，未验证记录不丢失', () => {
   assert.equal(result.categories.length, 18);
-  assert.equal(result.siteCount, 2400);
+  assert.equal(result.siteCount, 2401);
   assert.equal(allSites.length, raw.sites.length);
   assert.equal(new Set(allSites.map((site) => site.id)).size, raw.sites.length);
-  assert.equal(allSites.filter((site) => site.verification.status === 'unverified').length, 2400);
+  assert.equal(allSites.filter((site) => site.verification.status === 'unverified').length, 2401);
   for (const category of result.categories) {
     const source = raw.categories.find((item) => item.id === category.id);
     assert.equal(category.sites.length, source.count);
@@ -38,7 +38,7 @@ test('首页保留5个分区和28张精选卡片，不截断分类全集', () =>
     assert.equal(category.sites.length, category.home.limit);
     assert.ok(category.sites.every((site) => site.categorySlug === category.slug));
   }
-  assert.equal(result.categories.find((category) => category.slug === 'ai').sites.length, 1403);
+  assert.equal(result.categories.find((category) => category.slug === 'ai').sites.length, 1404);
   assert.deepEqual(result.homeCategories.find((category) => category.slug === 'ai').sites.map((site) => site.slug),
     legacy.categories.find((category) => category.slug === 'ai').sites.map((site) => site.slug));
 });

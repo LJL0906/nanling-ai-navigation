@@ -3,7 +3,7 @@
     "schemaVersion": "1.0.0",
     "generatedAt": "2026-09-07",
     "language": "zh-CN",
-    "description": "由 src/data 下 6 份导航数据源统一字段、清洗追踪参数并按规范化网址去重生成。",
+    "description": "由 src/data 下 6 份导航数据源统一字段、清洗追踪参数并按规范化网址去重生成，后续手动收录来源保留在 manual-sites.json。",
     "deduplication": "按去除 www、协议差异、尾部斜杠、锚点及常见推广参数后的 域名+路径+有效查询参数 去重。",
     "caveats": [
       "未联网验证网站可访问性或内容安全性。",
@@ -11,9 +11,9 @@
       "verification.status 为 unverified 的记录不代表网站失效，仅表示尚未执行在线验证。"
     ],
     "stats": {
-      "sourceRecords": 2520,
-      "parsedValidRecords": 2494,
-      "uniqueSites": 2400,
+      "sourceRecords": 2521,
+      "parsedValidRecords": 2495,
+      "uniqueSites": 2401,
       "duplicateRecordsMerged": 94,
       "duplicateGroups": 87,
       "excludedRecords": 26,
@@ -45,6 +45,10 @@
       {
         "file": "README_getUrl.md",
         "recordCount": 48
+      },
+      {
+        "file": "manual-sites.json",
+        "recordCount": 1
       }
     ],
     "exclusions": [
@@ -215,7 +219,7 @@
       "color": "#7c3aed",
       "icon": "lucide:sparkles",
       "order": 0,
-      "count": 1403
+      "count": 1404
     },
     {
       "id": "search",
@@ -878,6 +882,45 @@
         "category": "ai",
         "confidence": "high",
         "reason": "核心功能为 AI 工具或 AI 服务"
+      }
+    },
+    {
+      "id": "site_875ff44a9738",
+      "slug": "agent-qa",
+      "name": "agent-qa",
+      "aliases": [],
+      "url": "https://vostride.com",
+      "alternateUrls": [],
+      "domain": "vostride.com",
+      "description": "agent-qa 支持通过 CLI / MCP 用自然语言测试 Web、Android 和 iOS 应用，结合 memidex 持久记忆、经验证的自我改进与可审查的运行证据。需要 Node.js 24+；运行时许可证为 FSL-1.1-ALv2，模型和外部服务费用随配置与用量变化。",
+      "category": "ai",
+      "sourceCategories": [
+        "AI 应用测试"
+      ],
+      "tags": [
+        "应用测试",
+        "MCP",
+        "持久记忆"
+      ],
+      "icon": null,
+      "sources": [
+        {
+          "dataset": "manual-sites.json",
+          "recordId": "agent-qa",
+          "category": "AI 应用测试",
+          "subcategory": null,
+          "detailUrl": "https://vostride.com/docs/agent-qa/quickstart",
+          "originalUrl": "https://vostride.com"
+        }
+      ],
+      "verification": {
+        "status": "unverified",
+        "checkedAt": null
+      },
+      "classification": {
+        "category": "ai",
+        "confidence": "high",
+        "reason": "核心功能为 AI 驱动的应用测试，按现有分类策略归入 AI 工具"
       }
     },
     {
