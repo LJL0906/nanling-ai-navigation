@@ -36,10 +36,10 @@ test('TLS默认验证证书，不自动退回明文；错误端口和TLS配置�
   assert.throws(() => getMySqlOptions({ ...env, MYSQL_SSL_MODE: 'preferred' }));
   assert.throws(() => getMySqlOptions({ ...env, MYSQL_SSL_CA: 'non-existent-ca-file' }));
 });
-test('数据库行完整还原2400条记录，重算分类数量，支持mysql2对象及JSON字符串', () => {
+test('数据库行完整还原2401条记录，重算分类数量，支持mysql2对象及JSON字符串', () => {
   const decoded = decodeNavigationRows(categories, sites);
   assert.equal(decoded.categories.length, 18);
-  assert.equal(decoded.sites.length, 2400);
+  assert.equal(decoded.sites.length, 2401);
   assert.deepEqual(decoded.sites, raw.sites);
   assert.deepEqual(decoded.categories, raw.categories);
   const changed = structuredClone(categories);

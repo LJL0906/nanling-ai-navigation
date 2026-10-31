@@ -1,0 +1,11 @@
+[
+  {
+    "id": "agent-qa",
+    "name": "agent-qa",
+    "url": "https://vostride.com",
+    "category": "AI 应用测试",
+    "description": "agent-qa 支持通过 CLI / MCP 用自然语言测试 Web、Android 和 iOS 应用，结合 memidex 持久记忆、经验证的自我改进与可审查的运行证据。需要 Node.js 24+；运行时许可证为 FSL-1.1-ALv2，模型和外部服务费用随配置与用量变化。",
+    "documentation": "https://vostride.com/docs/agent-qa/quickstart",
+    "repository": "https://github.com/vostride/agent-qa"
+  }
+]
